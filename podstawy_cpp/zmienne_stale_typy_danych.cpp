@@ -63,10 +63,6 @@ int main(){
   double zmienna6 = 3.141592653589;
   cout << "double: " << setprecision(14) << zmienna6 << ", rozmiar: " << sizeof(double) << " bajtow." << endl;
 
-  /*
-    - 
-  */
-
   // logiczne
   bool logiczna = false;
   cout << "bool: " << logiczna << ", rozmiar: " << sizeof(bool) << " bajtow." << endl;

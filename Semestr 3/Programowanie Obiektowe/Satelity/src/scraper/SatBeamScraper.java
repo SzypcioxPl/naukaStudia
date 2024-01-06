@@ -31,22 +31,20 @@ public class SatBeamScraper {
             return new ArrayList<>();
         }
 
-        if(rangeStart <= 0 || rangeStart >= 609){
-            throw new Exception("Start of range must be between 1 and 608");
-        }else{
-            rangeStart++;
-        }
-
-        if(rangeEnd > 608 || rangeEnd <= 0){
-            throw new Exception("End of range must be between 1 and 608");
-        }
-
         if(rangeEnd < rangeStart){
             throw new Exception("Start of range can't have lower value than End of range");
         }else{
             rangeEnd++;
         }
+        if(rangeEnd > 608 || rangeEnd <= 0){
+            throw new Exception("End of range must be between 1 and 608");
+        }
 
+        if(rangeStart <= 0 || rangeStart >= 609){
+            throw new Exception("Start of range must be between 1 and 608");
+        }else{
+            rangeStart++;
+        }
 
 
         Document parse = Jsoup.parse("<tr class=\"head_tr\"><th></th></tr>");
@@ -119,7 +117,7 @@ public class SatBeamScraper {
             Satellites.add(tempSat);
         }
 
-        logger.info("Successfully scraped Sattelites with id from " + rangeStart + " to " + rangeEnd);
+        logger.info("Successfully scraped Satellites with id from " + rangeStart + " to " + rangeEnd);
         return Satellites;
     }
 }

@@ -19,14 +19,39 @@ public class WebsiteData {
     }
 
 
-    class Satellite {
+    public static class Satellite {
 
+        //for tests
+        @Override
+        public String toString() {
+            return "Satellite{" +
+                    "norad=" + norad +
+                    ", names=" + names +
+                    ", operator='" + operator + '\'' +
+                    ", status='" + status + '\'' +
+                    ", orbitalPosition=" + orbitalPosition +
+                    ", actualPosition=" + actualPosition +
+                    ", launchDate=" + launchDate +
+                    ", launchSite='" + launchSite + '\'' +
+                    ", launchMass=" + launchMass +
+                    ", launchVehicle='" + launchVehicle + '\'' +
+                    ", satelliteManufacturer='" + satelliteManufacturer + '\'' +
+                    ", satelliteModel='" + satelliteModel + '\'' +
+                    ", satelliteExpectedLifetime='" + satelliteExpectedLifetime + '\'' +
+                    ", transmitters=" + transmitters +
+                    '}';
+        }
+
+        //        TODO: Class need to be public otherwise we will not be able to access it from other packages
         private int norad;
         private ArrayList<String> names;
         private String operator;
         private String status;
         private float orbitalPosition; // number in degrees, negative  = W, positive = E
         private float actualPosition; // as above
+
+        // TODO: I propose changing launchDate to string as well as actual position
+
         private Date launchDate;
         private String launchSite;
         private double launchMass;

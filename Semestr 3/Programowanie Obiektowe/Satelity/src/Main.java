@@ -21,20 +21,33 @@ public class Main {
     public static void main(String[] args) throws Exception {
         logger.info("Start of APP");
 
-        List<SatBeam> Satellites = new ArrayList<SatBeam>();
+        List<SatBeam> satellites = new ArrayList<SatBeam>();
 
         try{
-            Satellites = scraper.ScrapeData(1,3);
+            satellites = scraper.ScrapeData(1,1);
         }catch (Exception er){
             logger.error(er.getMessage());
         }
 
 
-        for(SatBeam SingleSat : Satellites){
+        for(SatBeam SingleSat : satellites){
             System.out.println(SingleSat.toString());
         }
 
-        // TODO: Prepare model mapper which will translate SatBeam Object to WebsiteData Object
+        SatBeam test = satellites.getFirst();
+
+        // translating SatBeam to WebsiteData Satellite
+        WebsiteData.Satellite testSat1 = new WebsiteData.Satellite();
+        testSat1 = test.toSatellite();
+
+        System.out.println(testSat1.toString());
+
+        // translating SatBeam to WebsiteData Satellite
+        WebsiteData.Satellite testSat2 = new WebsiteData.Satellite();
+        testSat2 = test.updateSatelliteBySatBeam(testSat2);
+
+        System.out.println(testSat2.toString());
+
 
     }
 }

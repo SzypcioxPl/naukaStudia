@@ -1,7 +1,18 @@
 package scraper;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+
 public class SatBeam {
 
+//    SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern ( "dd-MMM-yyyy" , Locale.ENGLISH );
     private Long id;
 
     private String position;
@@ -138,4 +149,48 @@ public class SatBeam {
                 "   - launchDate='" + launchDate + '\'' + "\n" +
                 "   - comments='" + comments + '\'' + '}' + "\n"  + "\n" ;
     }
+
+    public WebsiteData.Satellite toSatellite() throws ParseException {
+
+        // TODO: Can't translate position to 'actual position' and 'date' in WebsiteData because of type conflict
+
+
+        WebsiteData.Satellite satellite = new WebsiteData.Satellite();
+
+        satellite.setNorad(this.norad);
+        ArrayList<String> names = new ArrayList<String>();
+        names.add(this.sateliteName);
+        satellite.setNames(names);
+        satellite.setOperator(this.operator);
+        satellite.setStatus(this.status);
+//        satellite.setLaunchDate((Date) formatter.parse(this.launchDate));
+        satellite.setLaunchSite(this.launchSite);
+        satellite.setLaunchMass(this.launchMass);
+        satellite.setSatelliteModel(this.satelliteModel);
+
+        return satellite;
+    }
+
+    public WebsiteData.Satellite updateSatelliteBySatBeam(WebsiteData.Satellite websiteDataSat) throws ParseException {
+
+        // TODO: Can't translate position to 'actual position' and 'date' in WebsiteData because of type conflict
+
+        WebsiteData.Satellite satellite = websiteDataSat;
+
+        satellite.setNorad(this.norad);
+        ArrayList<String> names = new ArrayList<String>();
+        names.add(this.sateliteName);
+        satellite.setNames(names);
+        satellite.setOperator(this.operator);
+        satellite.setStatus(this.status);
+//        satellite.setLaunchDate((Date) formatter.parse(this.launchDate));
+        satellite.setLaunchSite(this.launchSite);
+        satellite.setLaunchMass(this.launchMass);
+        satellite.setSatelliteModel(this.satelliteModel);
+
+        return satellite;
+    }
+
+
+
 }

@@ -9,6 +9,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,9 +52,9 @@ public class SatBeamScraper {
 
         Elements headRow = document.select(".head_tr");
 
-        for (Element columns : headRow) {
-            System.out.println("text : " + columns.text());
-        }
+//        for (Element columns : headRow) {
+//            System.out.println("text : " + columns.text());
+//        }
 
         List<SatBeam> Satellites = new ArrayList<SatBeam>();
         int whichColumn = 0;
@@ -117,7 +118,18 @@ public class SatBeamScraper {
             Satellites.add(tempSat);
         }
 
-        logger.info("Successfully scraped Satellites with id from " + rangeStart + " to " + rangeEnd);
+        logger.info("Successfully scraped Satellites with id from " + (rangeStart - 1) + " to " + (rangeEnd-1));
         return Satellites;
+    }
+
+    // translating SatBeam Objects List to WebsiteData.Satellites Objects List
+    public ArrayList<WebsiteData.Satellite> SatBeamListToSatellites(List<SatBeam> satBeams) throws ParseException {
+        ArrayList<WebsiteData.Satellite> satellites = new ArrayList<WebsiteData.Satellite>();
+
+        for(SatBeam satBeam : satBeams){
+            satellites.add(satBeam.toSatellite());
+        }
+
+        return  satellites;
     }
 }

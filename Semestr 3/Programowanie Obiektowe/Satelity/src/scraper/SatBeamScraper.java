@@ -10,8 +10,14 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class SatBeamScraper {
 
@@ -24,12 +30,16 @@ public class SatBeamScraper {
         Document document;
         try {
             Connection connect = Jsoup.connect("https://www.satbeams.com/satellites");
-            document = connect.timeout(10 * 6000).get();
-
+//            document = connect.timeout(10 * 60000).get();
+            document = connect.get();
         } catch (Exception er) {
             logger.warn("Unable to connect!");
             logger.error(er);
             return new ArrayList<>();
+        }
+
+        if(Math.abs(rangeStart-rangeEnd) >= 77){
+            throw new Exception("Maximum number which you can save to single list is equal 77 objects");
         }
 
         if(rangeEnd < rangeStart){
@@ -58,7 +68,7 @@ public class SatBeamScraper {
 
         List<SatBeam> Satellites = new ArrayList<SatBeam>();
         int whichColumn = 0;
-
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MMM-yyyy", Locale.ENGLISH); //FORMAT STRING TO DATE
 
         // goes by rows
         for (int i = rangeStart; i <= rangeEnd; i++) {
@@ -102,7 +112,9 @@ public class SatBeamScraper {
                         tempSat.setLaunchMass(Integer.parseInt(tr.text()));
                         break;
                     case 10:
-                        tempSat.setLaunchDate(tr.text());
+                        LocalDate dateTime = LocalDate.parse(tr.text(), formatter); // to pretty date
+                        Date date =  Date.from(dateTime.atStartOfDay(ZoneId.systemDefault()).toInstant()); // to other format, more details
+                        tempSat.setLaunchDate(date);
                         break;
                     case 11:
                         break;

@@ -11,8 +11,7 @@ import java.util.TimeZone;
 
 public class SatBeam {
 
-//    SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern ( "dd-MMM-yyyy" , Locale.ENGLISH );
+//    DateTimeFormatter formatter = DateTimeFormatter.ofPattern ( "dd-MMM-yyyy" , Locale.ENGLISH );
     private Long id;
 
     private String position;
@@ -33,7 +32,7 @@ public class SatBeam {
 
     private int launchMass;
 
-    private String launchDate;
+    private Date launchDate;
 
     private String comments;
 
@@ -109,11 +108,11 @@ public class SatBeam {
         this.launchMass = launchMass;
     }
 
-    public String getLaunchDate() {
+    public Date getLaunchDate() {
         return launchDate;
     }
 
-    public void setLaunchDate(String launchDate) {
+    public void setLaunchDate(Date launchDate) {
         this.launchDate = launchDate;
     }
 
@@ -163,7 +162,7 @@ public class SatBeam {
         satellite.setNames(names);
         satellite.setOperator(this.operator);
         satellite.setStatus(this.status);
-//        satellite.setLaunchDate((Date) formatter.parse(this.launchDate));
+        satellite.setLaunchDate(this.launchDate);
         satellite.setLaunchSite(this.launchSite);
         satellite.setLaunchMass(this.launchMass);
         satellite.setSatelliteModel(this.satelliteModel);
@@ -183,7 +182,7 @@ public class SatBeam {
         satellite.setNames(names);
         satellite.setOperator(this.operator);
         satellite.setStatus(this.status);
-//        satellite.setLaunchDate((Date) formatter.parse(this.launchDate));
+        satellite.setLaunchDate(this.launchDate);
         satellite.setLaunchSite(this.launchSite);
         satellite.setLaunchMass(this.launchMass);
         satellite.setSatelliteModel(this.satelliteModel);

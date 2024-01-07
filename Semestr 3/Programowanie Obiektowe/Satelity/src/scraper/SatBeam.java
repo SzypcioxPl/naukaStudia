@@ -32,7 +32,7 @@ public class SatBeam {
 
     private int launchMass;
 
-    private Date launchDate;
+    private String launchDate;
 
     private String comments;
 
@@ -108,11 +108,11 @@ public class SatBeam {
         this.launchMass = launchMass;
     }
 
-    public Date getLaunchDate() {
+    public String getLaunchDate() {
         return launchDate;
     }
 
-    public void setLaunchDate(Date launchDate) {
+    public void setLaunchDate(String launchDate) {
         this.launchDate = launchDate;
     }
 
@@ -152,6 +152,7 @@ public class SatBeam {
     public WebsiteData.Satellite toSatellite() throws ParseException {
 
         // TODO: Can't translate position to 'actual position' and 'date' in WebsiteData because of type conflict
+        //       Normal Date format have to many deatils better idea is using simpler format
 
 
         WebsiteData.Satellite satellite = new WebsiteData.Satellite();
@@ -162,7 +163,7 @@ public class SatBeam {
         satellite.setNames(names);
         satellite.setOperator(this.operator);
         satellite.setStatus(this.status);
-        satellite.setLaunchDate(this.launchDate);
+//        satellite.setLaunchDate(this.launchDate);
         satellite.setLaunchSite(this.launchSite);
         satellite.setLaunchMass(this.launchMass);
         satellite.setSatelliteModel(this.satelliteModel);
@@ -173,6 +174,7 @@ public class SatBeam {
     public WebsiteData.Satellite updateSatelliteBySatBeam(WebsiteData.Satellite websiteDataSat) throws ParseException {
 
         // TODO: Can't translate position to 'actual position' and 'date' in WebsiteData because of type conflict
+        //       Normal Date format have to many deatils better idea is using simpler format
 
         WebsiteData.Satellite satellite = websiteDataSat;
 
@@ -182,7 +184,7 @@ public class SatBeam {
         satellite.setNames(names);
         satellite.setOperator(this.operator);
         satellite.setStatus(this.status);
-        satellite.setLaunchDate(this.launchDate);
+//        satellite.setLaunchDate(this.launchDate);
         satellite.setLaunchSite(this.launchSite);
         satellite.setLaunchMass(this.launchMass);
         satellite.setSatelliteModel(this.satelliteModel);

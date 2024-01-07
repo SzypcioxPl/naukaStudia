@@ -16,14 +16,15 @@ public class TestTranslation {
 
     private static SatBeamScraper scraper = new SatBeamScraper();
 
-    public void checkWhetherSatBeamListIsScrapedProperly(){
+    public int checkWhetherSatBeamListIsScrapedProperly(int rangeStart, int rangeEnd){
         logger.info(">>> Test Whether Scraper Properly Fetch Data From Website <<<");
         List<SatBeam> satellites = new ArrayList<SatBeam>();
 
         try{
-            satellites = scraper.ScrapeData(1,5);
+            satellites = scraper.ScrapeData(rangeStart,rangeEnd);
         }catch (Exception er){
             logger.error(er.getMessage());
+            return 1;
         }
 
 
@@ -31,18 +32,21 @@ public class TestTranslation {
             System.out.println(SingleSat.toString());
         }
 
+        return 0;
+
     }
 
-    public void checkWhetherSatBeamIsTranslatedToWebsiteSatellites() throws ParseException {
+    public int checkWhetherSatBeamIsTranslatedToWebsiteSatellites(int satID) throws ParseException {
         System.out.println("\n\n");
         logger.info(">>> Test Whether SatBeam Object Is Properly Translated To Satellite Object <<<");
 
         List<SatBeam> satellites = new ArrayList<SatBeam>();
 
         try{
-            satellites = scraper.ScrapeData(1,1);
+            satellites = scraper.ScrapeData(satID,satID);
         }catch (Exception er){
-            logger.error(er.getMessage());
+            logger.error("While scraping data something goes wrong:" + er);
+            return 1;
         }
 
 
@@ -51,57 +55,82 @@ public class TestTranslation {
         try {
             testSat = satellites.getFirst().toSatellite();
         }catch (Exception err){
-            logger.error(err);
+            logger.error("Cannot translate SatBeam Object to WebsiteData.Satellite Object: " + err);
+            return 1;
         }
+        logger.info("Successfully translate SatBeam with id = " + satID + " to WebsiteData.Satellite Object");
         System.out.println(testSat.toString());
-
+        return 0;
     }
 
-    public void checkWhetherSatBeamDataIsTranslatedExistingWebsiteSatellite(){
+    public int checkWhetherSatBeamDataIsTranslatedToExistingWebsiteSatellite(int satID){
         System.out.println("\n\n");
         logger.info(">>> Test Whether SatBeam Object Is Properly Translated and Update Data in Already Created Satellite <<<");
 
         List<SatBeam> satellites = new ArrayList<SatBeam>();
 
         try{
-            satellites = scraper.ScrapeData(1,1);
+            satellites = scraper.ScrapeData(satID,satID);
         }catch (Exception er){
-            logger.error(er.getMessage());
+            logger.error("While scraping data something goes wrong:" + er);
+            return 1;
         }
 
         SatBeam satBeam = new SatBeam();
         try {
            satBeam = satellites.getFirst();
         }catch (Exception err){
-            logger.error(err);
+            logger.error("Problem while extracting Sat with given ID from list: " + err);
+            return 1;
         }
         ;
+        logger.info("Created for tests WebsiteData.Satellite Object");
         WebsiteData.Satellite testSat = new WebsiteData.Satellite();
+        testSat.setStatus("dunno");
+        testSat.setOperator("Some Guy");
+        testSat.setLaunchSite("North or West");
+        testSat.setLaunchMass(69696969.0);
+        testSat.setSatelliteModel("LEGO Super Extra Satellite");
+
+        System.out.println(testSat.toString() + "\n\n");
+
+
         try{
             testSat = satBeam.updateSatelliteBySatBeam(testSat);
+            logger.info("Created WebsiteData.Satellite Object after update");
             System.out.println(testSat.toString());
+            return 0;
         }catch (Exception er){
-            logger.error(er);
+            logger.error("Error while updating WebsiteData.Satellite Object occured" + er);
+            return 1;
         }
     }
 
-    public void checkWhetherSatBeamListIsTranslatedToWebsiteSatellitesList() throws ParseException {
+    public int checkWhetherSatBeamListIsTranslatedToWebsiteSatellitesList(int rangeStart, int rangeEnd) throws ParseException {
         System.out.println("\n\n");
         logger.info(">>> Test Whether SatBeam Object List Is Properly Translated To Satellite Object List <<<");
 
         List<SatBeam> satellites = new ArrayList<SatBeam>();
 
         try{
-            satellites = scraper.ScrapeData(1,77);
+            satellites = scraper.ScrapeData(rangeStart,rangeEnd);
         }catch (Exception er){
-            logger.error(er.getMessage());
+            logger.error("While scraping data something goes wrong:" + er);
+            return 1;
         }
 
-        ArrayList<WebsiteData.Satellite> testSattelites = scraper.SatBeamListToSatellites(satellites);
-
-        for(WebsiteData.Satellite oneSattelite: testSattelites){
-            System.out.println(oneSattelite.toString());
+        try{
+            ArrayList<WebsiteData.Satellite> testSattelites = scraper.SatBeamListToSatellites(satellites);
+            for(WebsiteData.Satellite oneSattelite: testSattelites){
+                System.out.println(oneSattelite.toString());
+            }
+        }catch (Exception er){
+            logger.error("While translating List<SatBeam> to List<WebsiteData.Satellite> some error occured: " + er);
+            return 1;
         }
+
+
+        return 0;
     }
 
 }

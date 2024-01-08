@@ -60,9 +60,14 @@ public class SatBeamScraper {
         // start scraping data
         List<SatBeam> Satellites = new ArrayList<SatBeam>();
         int whichColumn = 0;
+        String anim= "|/-\\"; //for loading animation
 
         // goes every row from given range
         for (int i = rangeStart; i <= rangeEnd; i++) {
+
+            // loading animation
+            String data = "\r ID of scraped Sat: " + (i-1)  + " " +  anim.charAt(i% anim.length()) + "   |   ";
+            System.out.write(data.getBytes());
 
             //get data from single row
             String condition = "table > tbody > tr > td:nth-child(2) tr:nth-child(" + i + ") td";
@@ -237,7 +242,6 @@ public class SatBeamScraper {
 
             whichLine++;
         }
-        whichLine = 0;
         return tempSat;
     }
 

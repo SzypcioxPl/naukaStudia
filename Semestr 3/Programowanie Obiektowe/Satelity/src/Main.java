@@ -16,10 +16,10 @@ public class Main {
     public static void main(String[] args) throws Exception {
         logger.info("Start of APP\n\n");
 
-        testTranslation.checkWhetherSatBeamListIsScrapedProperly(600, 608);
+        testTranslation.checkWhetherSatBeamListIsScrapedProperly(1, 608);
         testTranslation.checkWhetherSatBeamIsTranslatedToWebsiteSatellites(78);
         testTranslation.checkWhetherSatBeamDataIsTranslatedToExistingWebsiteSatellite(56);
-        testTranslation.checkWhetherSatBeamListIsTranslatedToWebsiteSatellitesList(1, 10);
+        testTranslation.checkWhetherSatBeamListIsTranslatedToWebsiteSatellitesList(1, 608);
 
 
     }

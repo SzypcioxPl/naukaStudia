@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,8 +15,10 @@ import java.util.TimeZone;
 
 public class SatBeam {
     protected static final Logger logger = LogManager.getLogger();
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MMM-yyyy", Locale.ENGLISH); //FORMAT STRING TO DATE
 
-//    DateTimeFormatter formatter = DateTimeFormatter.ofPattern ( "dd-MMM-yyyy" , Locale.ENGLISH );
+
+    //    DateTimeFormatter formatter = DateTimeFormatter.ofPattern ( "dd-MMM-yyyy" , Locale.ENGLISH );
     private Long id;
 
     private String position;
@@ -213,7 +216,14 @@ public class SatBeam {
             logger.error("Error while converting position for Sat with ID: " + this.id);
             satellite.setOrbitalPosition((float)0.0);
         }
-//        satellite.setLaunchDate(this.launchDate);
+        try{
+            LocalDate dateTime = LocalDate.parse(this.launchDate, formatter);
+            Date date =  Date.from(dateTime.atStartOfDay(ZoneId.systemDefault()).toInstant()); // to other format, more details
+            satellite.setLaunchDate(date);
+        }catch (Exception er){
+            logger.warn("Problem with converting string to date for Sat " + this.id + " : " + er);
+            satellite.setLaunchDate(null);
+        }
         satellite.setLaunchSite(this.launchSite);
         satellite.setLaunchMass(this.launchMass);
         satellite.setLaunchVehicle(this.launchVehicle);
@@ -247,7 +257,14 @@ public class SatBeam {
         }catch (Exception er){
             logger.error("Error while converting position Sat: " + names.getFirst());
         }
-//        satellite.setLaunchDate(this.launchDate);
+        try{
+            LocalDate dateTime = LocalDate.parse(this.launchDate, formatter);
+            Date date =  Date.from(dateTime.atStartOfDay(ZoneId.systemDefault()).toInstant()); // to other format, more details
+            satellite.setLaunchDate(date);
+        }catch (Exception er){
+            logger.warn("Problem with converting string to date for Sat " + this.id + " : " + er);
+            satellite.setLaunchDate(null);
+        }
         satellite.setLaunchSite(this.launchSite);
         satellite.setLaunchMass(this.launchMass);
         satellite.setLaunchVehicle(this.launchVehicle);

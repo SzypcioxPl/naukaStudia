@@ -15,6 +15,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class SatBeamScraper {
 
@@ -94,6 +95,18 @@ public class SatBeamScraper {
                                 break;
                             case 3:
                                 tempSat.setSateliteName(tr.text());
+                                try{
+                                    Elements aLinkHref = document.select("table > tbody > tr > td:nth-child(2) tr:nth-child(" + i + ") td > a");
+//                                    System.out.println("Link: " + "https://www.satbeams.com" + aLinkHref.getFirst().attr("href"));
+                                    String link = "https://www.satbeams.com" + aLinkHref.getFirst().attr("href");
+                                    try{
+                                        tempSat = this.GetAdditionalData(link, tempSat);
+                                    }catch (Exception er){
+                                        logger.error("While getting additional data to Sat with id = " + tempSat.getId() + " error occured: " + er);
+                                    }
+                                }catch (Exception er){
+                                    logger.error("While scraping url to more detailed info about Sat error occured: " + er);
+                                }
                                 break;
                             case 4:
                                 try{
@@ -151,6 +164,81 @@ public class SatBeamScraper {
 
         logger.info("Successfully scraped Satellites with id from " + (rangeStart - 1) + " to " + (rangeEnd-1));
         return Satellites;
+    }
+
+    public SatBeam GetAdditionalData(String url, SatBeam sat) throws Exception {
+        SatBeam tempSat = sat;
+        Document document;
+        try {
+            Connection connect = Jsoup.connect(url);
+            document = connect.get();
+        } catch (Exception er) {
+            throw new Exception("Unable to connect! Error: " + er);
+        }
+
+        String condition = "div#table_wrap table tbody > tr:nth-child(2) > td:first-child";
+        Elements items = document.select(condition);
+        String[] toAnalyze = items.toString().split("(\\<br\\>|\\<td\\>)\\<b\\>*[a-z A-Z0-9:()]*\\<\\/b\\>");
+
+        int whichLine = 0;
+        for (String oneItem : toAnalyze){
+
+            if(whichLine == 9){
+                if(oneItem.contains("<a href")) {
+                    String[] item = oneItem.split("\">");
+                    item = item[1].split("</a>");
+                    String launchVehicle = item[0];
+                    tempSat.setLaunchVehicle(launchVehicle);
+//                    System.out.println("Launch Vehicle: " + launchVehicle);
+                } else if (oneItem.contains("&nbsp;")) {
+                    String launchVehicle = null;
+                    tempSat.setLaunchVehicle(launchVehicle);
+//                    System.out.println("Launch Vehicle: " + launchVehicle);
+                }else {
+                    tempSat.setLaunchVehicle(oneItem);
+//                    System.out.println("Launch Vehicle: " +  oneItem);
+                }
+            }
+
+            if(whichLine == 12){
+                if(oneItem.contains("<a href")) {
+                    String[] item = oneItem.split("\">");
+                    item = item[1].split("</a>");
+                    String manufacturer = item[0];
+                    tempSat.setManufacturer(manufacturer);
+//                    System.out.println("Manufacturer: " + manufacturer);
+                } else if (oneItem.contains("&nbsp;")) {
+                    String manufacturer = null;
+                    tempSat.setManufacturer(manufacturer);
+//                    System.out.println("Manufacturer: " + manufacturer);
+                }else {
+                    tempSat.setManufacturer(oneItem);
+//                    System.out.println("Manufacturer: " + oneItem);
+                }
+            }
+
+            if(whichLine == 15){
+                if(oneItem.contains("<a href")) {
+                    String[] item = oneItem.split("\">");
+                    item = item[1].split("</a>");
+                    String expectedLife = item[0].split("<br></td>")[0];
+                    tempSat.setExpectedLifetime(expectedLife);
+//                    System.out.println("Expected Life:" + expectedLife);
+                } else if (oneItem.contains("&nbsp;")) {
+                    String expectedLife = null;
+                    tempSat.setExpectedLifetime(expectedLife);
+//                    System.out.println("Expected Life:" + expectedLife);
+                }else {
+                    String expectedLife = oneItem.split("<br></td>")[0];
+                    tempSat.setExpectedLifetime(expectedLife);
+//                    System.out.println("Expected Life: " +  expectedLife);
+                }
+            }
+
+            whichLine++;
+        }
+        whichLine = 0;
+        return tempSat;
     }
 
     // translating SatBeam Objects List to WebsiteData.Satellites Objects List

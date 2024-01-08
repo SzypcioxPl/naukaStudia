@@ -1,5 +1,8 @@
 package scraper;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -10,6 +13,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 public class SatBeam {
+    protected static final Logger logger = LogManager.getLogger();
 
 //    DateTimeFormatter formatter = DateTimeFormatter.ofPattern ( "dd-MMM-yyyy" , Locale.ENGLISH );
     private Long id;
@@ -34,7 +38,15 @@ public class SatBeam {
 
     private String launchDate;
 
+    private String launchVehicle;
+
+    private String manufacturer;
+
+    private String expectedLifetime;
+
     private String comments;
+
+
 
     public Long getId() {
         return id;
@@ -132,6 +144,30 @@ public class SatBeam {
         this.status = status;
     }
 
+    public String getLaunchVehicle() {
+        return launchVehicle;
+    }
+
+    public void setLaunchVehicle(String launchVehicle) {
+        this.launchVehicle = launchVehicle;
+    }
+
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
+    }
+
+    public String getExpectedLifetime() {
+        return expectedLifetime;
+    }
+
+    public void setExpectedLifetime(String expectedLifetime) {
+        this.expectedLifetime = expectedLifetime;
+    }
+
     @Override
     public String toString() {
         return "SatBeam{" + "\n" +
@@ -146,6 +182,9 @@ public class SatBeam {
                 "   - launchSite='" + launchSite + '\'' + "\n" +
                 "   - launchMass=" + launchMass + "\n" +
                 "   - launchDate='" + launchDate + '\'' + "\n" +
+                "   - launchVehicle='" + launchVehicle + '\'' + "\n" +
+                "   - manufacturer='" + manufacturer + '\'' + "\n" +
+                "   - expectedLifetime='" + expectedLifetime + '\'' + "\n" +
                 "   - comments='" + comments + '\'' + '}' + "\n"  + "\n" ;
     }
 
@@ -163,10 +202,24 @@ public class SatBeam {
         satellite.setNames(names);
         satellite.setOperator(this.operator);
         satellite.setStatus(this.status);
+        try{
+            String[] position = this.position.split(" ");
+            if(this.position.contains("E")){
+                satellite.setOrbitalPosition(Float.parseFloat(position[0]));
+            }else{
+                satellite.setOrbitalPosition(Float.parseFloat(position[0]) * (-1));
+            }
+        }catch (Exception er){
+            logger.error("Error while converting position for Sat with ID: " + this.id);
+            satellite.setOrbitalPosition((float)0.0);
+        }
 //        satellite.setLaunchDate(this.launchDate);
         satellite.setLaunchSite(this.launchSite);
         satellite.setLaunchMass(this.launchMass);
+        satellite.setLaunchVehicle(this.launchVehicle);
+        satellite.setSatelliteManufacturer(this.manufacturer);
         satellite.setSatelliteModel(this.satelliteModel);
+        satellite.setSatelliteExpectedLifetime(this.expectedLifetime);
 
         return satellite;
     }
@@ -184,10 +237,23 @@ public class SatBeam {
         satellite.setNames(names);
         satellite.setOperator(this.operator);
         satellite.setStatus(this.status);
+        try{
+            String[] position = this.position.split(" ");
+            if(this.position.contains("E")){
+                satellite.setOrbitalPosition(Float.parseFloat(position[0]));
+            }else{
+                satellite.setOrbitalPosition(Float.parseFloat(position[0]) * (-1));
+            }
+        }catch (Exception er){
+            logger.error("Error while converting position Sat: " + names.getFirst());
+        }
 //        satellite.setLaunchDate(this.launchDate);
         satellite.setLaunchSite(this.launchSite);
         satellite.setLaunchMass(this.launchMass);
+        satellite.setLaunchVehicle(this.launchVehicle);
+        satellite.setSatelliteManufacturer(this.manufacturer);
         satellite.setSatelliteModel(this.satelliteModel);
+        satellite.setSatelliteExpectedLifetime(this.expectedLifetime);
 
         return satellite;
     }

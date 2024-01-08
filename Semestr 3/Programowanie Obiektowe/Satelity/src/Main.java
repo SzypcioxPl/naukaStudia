@@ -17,12 +17,9 @@ public class Main {
         logger.info("Start of APP\n\n");
 
         testTranslation.checkWhetherSatBeamListIsScrapedProperly(600, 608);
-
-        testTranslation.checkWhetherSatBeamIsTranslatedToWebsiteSatellites(67);
-
+        testTranslation.checkWhetherSatBeamIsTranslatedToWebsiteSatellites(78);
         testTranslation.checkWhetherSatBeamDataIsTranslatedToExistingWebsiteSatellite(56);
-
-        testTranslation.checkWhetherSatBeamListIsTranslatedToWebsiteSatellitesList(10, 20);
+        testTranslation.checkWhetherSatBeamListIsTranslatedToWebsiteSatellitesList(1, 10);
 
 
     }

@@ -18,7 +18,7 @@ public class SatBeamScraper {
     public SatBeamScraper() {
     }
 
-    public List<SatBeam> ScrapeData(int rangeStart, int rangeEnd) throws Exception {
+    public List<SatBeam> ScrapeData(int rangeStart, int rangeEnd, String status) throws Exception {
 
         // check connection
         Document document;
@@ -50,17 +50,22 @@ public class SatBeamScraper {
             rangeStart++;
         }
 
+        if(!status.contains("active") && !status.contains("deorbited") && !status.contains("retired") && !status.contains("failed") && !status.contains("any")){
+            throw new Exception("Provided wrong type of status");
+        }
+
 
         // start scraping data
         List<SatBeam> Satellites = new ArrayList<SatBeam>();
         int whichColumn = 0;
         String anim= "|/-\\"; //for loading animation
+        int scrapedSatCount = 1;
 
         // goes every row from given range
         for (int i = rangeStart; i <= rangeEnd; i++) {
 
             // loading animation
-            String data = "\r ID of scraped Sat: " + (i-1)  + " " +  anim.charAt(i% anim.length()) + "   |   ";
+            String data = "\r  Scraped Sat's with '" + status + "' status: " + scrapedSatCount + " " +  anim.charAt(i% anim.length()) + "   |   ";
             System.out.write(data.getBytes());
 
             //get data from single row
@@ -74,84 +79,88 @@ public class SatBeamScraper {
                 // check whether row we got is not empty
                 if(!Objects.equals(trRow.text(), "")){
 
-                    // handle single row data and save it to object
-                    for (Element tr : trRow) {
+                    // check if satellite has given status
+                    if(status.equals("any") || trRow.get(2).text().contains(status)){
+                        // handle single row data and save it to object
+                        for (Element tr : trRow) {
 
-                        switch (whichColumn){
-                            case 0:
-                                try{
-                                    tempSat.setId(Long.parseLong(tr.text()));
-                                }catch (Exception er) {
-                                    scraper.warn("Can't scrape ID for Sat number " + Satellites.getLast().getId() + " : " + er.getMessage());
-                                    tempSat.setId(null);
-                                }
-                                break;
-                            case 1:
-                                tempSat.setPosition(tr.text());
-                                break;
-                            case 2:
-                                tempSat.setStatus(tr.text());
-                                break;
-                            case 3:
-                                tempSat.setSateliteName(tr.text());
-                                try{
-                                    Elements aLinkHref = document.select("table > tbody > tr > td:nth-child(2) tr:nth-child(" + i + ") td > a");
-//                                    System.out.println("Link: " + "https://www.satbeams.com" + aLinkHref.getFirst().attr("href"));
-                                    String link = "https://www.satbeams.com" + aLinkHref.getFirst().attr("href");
+                            switch (whichColumn){
+                                case 0:
                                     try{
-                                        tempSat = this.GetAdditionalData(link, tempSat);
-                                    }catch (Exception er){
-                                        scraper.error("While getting additional data to Sat with id = " + tempSat.getId() + " error occured: " + er);
+                                        tempSat.setId(Long.parseLong(tr.text()));
+                                    }catch (Exception er) {
+                                        scraper.warn("Can't scrape ID for Sat number " + Satellites.getLast().getId() + " : " + er.getMessage());
+                                        tempSat.setId(null);
                                     }
-                                }catch (Exception er){
-                                    scraper.error("While scraping url to more detailed info about Sat error occured: " + er);
-                                }
-                                break;
-                            case 4:
-                                try{
-                                    tempSat.setNorad(Integer.parseInt(tr.text()));
-                                }catch (Exception er){
-                                    scraper.warn("Can't scrape Norad for Sat with id " + tempSat.getId() + " : "+ er.getMessage());
-                                    tempSat.setNorad(0);
-                                }
-                                break;
-                            case 5:
-                                tempSat.setCospar(tr.text());
-                                break;
-                            case 6:
-                                tempSat.setSatelliteModel(tr.text());
-                                break;
-                            case 7:
-                                tempSat.setOperator(tr.text());
-                                break;
-                            case 8:
-                                tempSat.setLaunchSite(tr.text());
-                                break;
-                            case 9:
-                                try{
-                                    tempSat.setLaunchMass(Integer.parseInt(tr.text()));
-                                }catch (Exception er){
-                                    scraper.warn("Can't scrape Launch Mass for Sat with id " + tempSat.getId() + ": "+ er.getMessage());
-                                    tempSat.setLaunchMass(0);
-                                }
-                                break;
-                            case 10:
-                                tempSat.setLaunchDate(tr.text());
-                                break;
-                            case 11:
-                                break;
-                            case 12:
-                                break;
-                            case 13:
-                                tempSat.setComments(tr.text());
-                                break;
+                                    break;
+                                case 1:
+                                    tempSat.setPosition(tr.text());
+                                    break;
+                                case 2:
+                                    tempSat.setStatus(tr.text());
+                                    break;
+                                case 3:
+                                    tempSat.setSateliteName(tr.text());
+                                    try{
+                                        Elements aLinkHref = document.select("table > tbody > tr > td:nth-child(2) tr:nth-child(" + i + ") td > a");
+//                                    System.out.println("Link: " + "https://www.satbeams.com" + aLinkHref.getFirst().attr("href"));
+                                        String link = "https://www.satbeams.com" + aLinkHref.getFirst().attr("href");
+                                        try{
+                                            tempSat = this.GetAdditionalData(link, tempSat);
+                                        }catch (Exception er){
+                                            scraper.error("While getting additional data to Sat with id = " + tempSat.getId() + " error occured: " + er);
+                                        }
+                                    }catch (Exception er){
+                                        scraper.error("While scraping url to more detailed info about Sat error occured: " + er);
+                                    }
+                                    break;
+                                case 4:
+                                    try{
+                                        tempSat.setNorad(Integer.parseInt(tr.text()));
+                                    }catch (Exception er){
+                                        scraper.warn("Can't scrape Norad for Sat with id " + tempSat.getId() + " : "+ er.getMessage());
+                                        tempSat.setNorad(0);
+                                    }
+                                    break;
+                                case 5:
+                                    tempSat.setCospar(tr.text());
+                                    break;
+                                case 6:
+                                    tempSat.setSatelliteModel(tr.text());
+                                    break;
+                                case 7:
+                                    tempSat.setOperator(tr.text());
+                                    break;
+                                case 8:
+                                    tempSat.setLaunchSite(tr.text());
+                                    break;
+                                case 9:
+                                    try{
+                                        tempSat.setLaunchMass(Integer.parseInt(tr.text()));
+                                    }catch (Exception er){
+                                        scraper.warn("Can't scrape Launch Mass for Sat with id " + tempSat.getId() + ": "+ er.getMessage());
+                                        tempSat.setLaunchMass(0);
+                                    }
+                                    break;
+                                case 10:
+                                    tempSat.setLaunchDate(tr.text());
+                                    break;
+                                case 11:
+                                    break;
+                                case 12:
+                                    break;
+                                case 13:
+                                    tempSat.setComments(tr.text());
+                                    break;
+                            }
+                            whichColumn++;
                         }
-                        whichColumn++;
-                    }
 
-                    // add Sat Objects to List<SatBeam> Objects
-                    whichColumn = 0;
-                    Satellites.add(tempSat);
+                        // add Sat Objects to List<SatBeam> Objects
+                        whichColumn = 0;
+                        scrapedSatCount++;
+                        Satellites.add(tempSat);
+                    }
                 }else {
                     scraper.warn("Scraped line number " + Satellites.getLast().getId() + " is empty!");
                 }
@@ -161,7 +170,7 @@ public class SatBeamScraper {
             }
         }
 
-        scraper.info("Successfully scraped Satellites with id from " + (rangeStart - 1) + " to " + (rangeEnd-1));
+        scraper.info("Successfully scraped " + (scrapedSatCount-1) + " satellites!");
         return Satellites;
     }
 

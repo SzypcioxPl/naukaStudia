@@ -16,12 +16,12 @@ public class TestTranslation {
 
     private static SatBeamScraper scraper = new SatBeamScraper();
 
-    public int checkWhetherSatBeamListIsScrapedProperly(int rangeStart, int rangeEnd){
+    public int checkWhetherSatBeamListIsScrapedProperly(int rangeStart, int rangeEnd, String status){
         logger.info(">>> Test Whether Scraper Properly Fetch Data From Website <<<");
         List<SatBeam> satellites = new ArrayList<SatBeam>();
 
         try{
-            satellites = scraper.ScrapeData(rangeStart,rangeEnd);
+            satellites = scraper.ScrapeData(rangeStart,rangeEnd, status);
         }catch (Exception er){
             logger.error(er.getMessage());
             return 1;
@@ -43,7 +43,7 @@ public class TestTranslation {
         List<SatBeam> satellites = new ArrayList<SatBeam>();
 
         try{
-            satellites = scraper.ScrapeData(satID,satID);
+            satellites = scraper.ScrapeData(satID,satID, "any");
         }catch (Exception er){
             logger.error("While scraping data something goes wrong:" + er);
             return 1;
@@ -70,7 +70,7 @@ public class TestTranslation {
         List<SatBeam> satellites = new ArrayList<SatBeam>();
 
         try{
-            satellites = scraper.ScrapeData(satID,satID);
+            satellites = scraper.ScrapeData(satID,satID, "any");
         }catch (Exception er){
             logger.error("While scraping data something goes wrong:" + er);
             return 1;
@@ -113,7 +113,7 @@ public class TestTranslation {
         List<SatBeam> satellites = new ArrayList<SatBeam>();
 
         try{
-            satellites = scraper.ScrapeData(rangeStart,rangeEnd);
+            satellites = scraper.ScrapeData(rangeStart,rangeEnd, "any");
         }catch (Exception er){
             logger.error("While scraping data something goes wrong:" + er);
             return 1;

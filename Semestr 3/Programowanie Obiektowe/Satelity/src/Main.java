@@ -19,10 +19,12 @@ public class Main {
     public static void main(String[] args) throws Exception {
         main.info("Start of APP\n\n");
 
-//        testTranslation.checkWhetherSatBeamListIsScrapedProperly(70, 228);
-//        testTranslation.checkWhetherSatBeamIsTranslatedToWebsiteSatellites(78);
-//        testTranslation.checkWhetherSatBeamDataIsTranslatedToExistingWebsiteSatellite(56);
-//        testTranslation.checkWhetherSatBeamListIsTranslatedToWebsiteSatellitesList(1, 608);
+        // possible status = 'any', 'active', 'retires', 'failed', 'deorbited'
+//        testTranslation.checkWhetherSatBeamListIsScrapedProperly(1, 608, "deorbited");
+
+//        testTranslation.checkWhetherSatBeamIsTranslatedToWebsiteSatellites(78);               // status of Sat in test 'any'
+//        testTranslation.checkWhetherSatBeamDataIsTranslatedToExistingWebsiteSatellite(56);    // status of Sat in test 'any'
+//        testTranslation.checkWhetherSatBeamListIsTranslatedToWebsiteSatellitesList(1, 608);   // status of Sat in test 'any'
 
         // crating frame
         JFrame frame = new JFrame("My First GUI");

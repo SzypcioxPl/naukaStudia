@@ -4,17 +4,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
-import java.util.TimeZone;
 
 public class SatBeam {
-    protected static final Logger logger = LogManager.getLogger();
+    protected static final Logger satbeam = LogManager.getLogger();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MMM-yyyy", Locale.ENGLISH); //FORMAT STRING TO DATE
 
 
@@ -213,7 +211,7 @@ public class SatBeam {
                 satellite.setOrbitalPosition(Float.parseFloat(position[0]) * (-1));
             }
         }catch (Exception er){
-            logger.error("Error while converting position for Sat with ID: " + this.id);
+            satbeam.error("Error while converting position for Sat with ID: " + this.id);
             satellite.setOrbitalPosition((float)0.0);
         }
         try{
@@ -221,7 +219,7 @@ public class SatBeam {
             Date date =  Date.from(dateTime.atStartOfDay(ZoneId.systemDefault()).toInstant()); // to other format, more details
             satellite.setLaunchDate(date);
         }catch (Exception er){
-            logger.warn("Problem with converting string to date for Sat " + this.id + " : " + er);
+            satbeam.warn("Problem with converting string to date for Sat " + this.id + " : " + er);
             satellite.setLaunchDate(null);
         }
         satellite.setLaunchSite(this.launchSite);
@@ -255,14 +253,14 @@ public class SatBeam {
                 satellite.setOrbitalPosition(Float.parseFloat(position[0]) * (-1));
             }
         }catch (Exception er){
-            logger.error("Error while converting position Sat: " + names.getFirst());
+            satbeam.error("Error while converting position Sat: " + names.getFirst());
         }
         try{
             LocalDate dateTime = LocalDate.parse(this.launchDate, formatter);
             Date date =  Date.from(dateTime.atStartOfDay(ZoneId.systemDefault()).toInstant()); // to other format, more details
             satellite.setLaunchDate(date);
         }catch (Exception er){
-            logger.warn("Problem with converting string to date for Sat " + this.id + " : " + er);
+            satbeam.warn("Problem with converting string to date for Sat " + this.id + " : " + er);
             satellite.setLaunchDate(null);
         }
         satellite.setLaunchSite(this.launchSite);

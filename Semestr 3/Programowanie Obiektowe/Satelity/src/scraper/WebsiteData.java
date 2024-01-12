@@ -25,20 +25,20 @@ public class WebsiteData {
         @Override
         public String toString() {
             return "Satellite{" + "\n" +
-                    "   - norad=" + norad + "\n" +
-                    "   - names=" + names + "\n" +
-                    "   - operator=" + operator + "\n" +
-                    "   - status=" + status + "\n" +
-                    "   - orbitalPosition=" + orbitalPosition + "\n" +
-                    "   - actualPosition=" + actualPosition + "\n" +
-                    "   - launchDate=" + launchDate + "\n" +
-                    "   - launchSite=" + launchSite + "\n" +
-                    "   - launchMass=" + launchMass + "\n" +
-                    "   - launchVehicle=" + launchVehicle + "\n" +
-                    "   - satelliteManufacturer=" + satelliteManufacturer + "\n" +
-                    "   - satelliteModel=" + satelliteModel + "\n" +
-                    "   - satelliteExpectedLifetime=" + satelliteExpectedLifetime + "\n" +
-                    "   - transmitters=" + transmitters + '}';
+                    "   - norad = " + norad + "\n" +
+                    "   - names = '" + names + "'\n" +
+                    "   - operator = '" + operator + "'\n" +
+                    "   - status = '" + status + "'\n" +
+                    "   - orbitalPosition = " + orbitalPosition + "\n" +
+                    "   - actualPosition = " + actualPosition + "\n" +
+                    "   - launchDate = " + launchDate + "\n" +
+                    "   - launchSite = '" + launchSite + "'\n" +
+                    "   - launchMass = " + launchMass + "\n" +
+                    "   - launchVehicle = '" + launchVehicle + "'\n" +
+                    "   - satelliteManufacturer = '" + satelliteManufacturer + "'\n" +
+                    "   - satelliteModel = '" + satelliteModel + "'\n" +
+                    "   - satelliteExpectedLifetime = " + satelliteExpectedLifetime + "\n" +
+                    "   - transmitters = " + transmitters + '}';
         }
 
         //        TODO: Class need to be public otherwise we will not be able to access it from other packages
@@ -208,7 +208,7 @@ public class WebsiteData {
         }
 
 
-        class Transmitter {
+        public class Transmitter {
 
             private int frequency;
             private char polarisation;

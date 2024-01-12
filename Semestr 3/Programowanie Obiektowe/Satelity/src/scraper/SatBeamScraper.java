@@ -50,6 +50,7 @@ public class SatBeamScraper {
             rangeStart++;
         }
 
+        // check if provided status is valid
         if(!status.contains("active") && !status.contains("deorbited") && !status.contains("retired") && !status.contains("failed") && !status.contains("any")){
             throw new Exception("Provided wrong type of status");
         }
@@ -65,13 +66,14 @@ public class SatBeamScraper {
         for (int i = rangeStart; i <= rangeEnd; i++) {
 
             // loading animation
-            String data = "\r  Scraped Sat's with '" + status + "' status: " + scrapedSatCount + " " +  anim.charAt(i% anim.length()) + "   |   ";
+            String data = "\r  Scraped Sat's with '" + status + "' status: " + scrapedSatCount + "   " +  anim.charAt(i% anim.length()) + "   ";
             System.out.write(data.getBytes());
+            if(i == rangeEnd){System.out.println("\n");}
 
             //get data from single row
             String condition = "table > tbody > tr > td:nth-child(2) tr:nth-child(" + i + ") td";
 
-            //check whether no error occure while getting row
+            //check whether no error occur while getting row
             try{
                 Elements trRow = document.select(condition);
                 SatBeam tempSat = new SatBeam();
@@ -81,6 +83,7 @@ public class SatBeamScraper {
 
                     // check if satellite has given status
                     if(status.equals("any") || trRow.get(2).text().contains(status)){
+
                         // handle single row data and save it to object
                         for (Element tr : trRow) {
 
@@ -177,12 +180,10 @@ public class SatBeamScraper {
     public SatBeam GetAdditionalData(String url, SatBeam sat) throws Exception {
         SatBeam tempSat = sat;
         Document document;
+
         try {
-            Connection connect = Jsoup.connect(url);
+            Connection connect = Jsoup.connect(url).timeout(10*10000);
             document = connect.get();
-//            OkHttpClient okHttp = new OkHttpClient();
-//            Request request = new Request.Builder().url(url).get().build();
-//            document = Jsoup.parse(okHttp.newCall(request).execute().body().string());
         } catch (Exception er) {
             throw new Exception("Unable to connect! Error: " + er);
         }

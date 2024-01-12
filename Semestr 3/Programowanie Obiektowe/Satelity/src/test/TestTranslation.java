@@ -113,7 +113,7 @@ public class TestTranslation {
         List<SatBeam> satellites = new ArrayList<SatBeam>();
 
         try{
-            satellites = scraper.ScrapeData(rangeStart,rangeEnd, "any");
+            satellites = scraper.ScrapeData(rangeStart,rangeEnd, "active");
         }catch (Exception er){
             logger.error("While scraping data something goes wrong:" + er);
             return 1;

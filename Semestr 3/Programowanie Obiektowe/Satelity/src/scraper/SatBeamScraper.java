@@ -163,6 +163,8 @@ public class SatBeamScraper {
                         whichColumn = 0;
                         scrapedSatCount++;
                         Satellites.add(tempSat);
+
+
                     }
                 }else {
                     scraper.warn("Scraped line number " + Satellites.getLast().getId() + " is empty!");
@@ -231,7 +233,104 @@ public class SatBeamScraper {
 
             whichLine++;
         }
+
+        if(Objects.equals(tempSat.getStatus(), "active")){
+            // getting url to satellite transmitters
+            condition = "div#table_wrap table tbody > tr:nth-child(2) > td:last-child";
+            items = document.select(condition);
+            toAnalyze = items.toString().split("(\\<br\\>|\\<td\\>)\\<b\\>*[a-z A-Z0-9:()]*\\<\\/b\\>");
+            String transmittersUrl = "";
+
+            whichLine = 0;
+            for (String oneItem : toAnalyze){
+                String value;
+                switch (whichLine){
+                    case  3:
+                        value = oneItem.split("</b> <a href=\"")[1];
+                        value = value.split("\">list")[0];
+                        transmittersUrl = "https://www.satbeams.com"+value;
+                        break;
+                }
+                whichLine++;
+            }
+
+            try{
+                ArrayList<WebsiteData.Satellite.Transmitter> transmitters = getTransmitters(transmittersUrl);
+                tempSat.setTransmitters(transmitters);
+            }catch (Exception er){
+                scraper.warn("Error while getting data about Transmitters for sat with id: " + tempSat.getId() + ", error: "+ er);
+            }
+        }else{
+            System.out.println("Doesn't have transmitters");
+        }
+
         return tempSat;
+    }
+
+    public ArrayList<WebsiteData.Satellite.Transmitter> getTransmitters(String url) throws Exception {
+        Document document;
+
+//        System.out.println("Scraping Transmitters");
+
+        try {
+            Connection connect = Jsoup.connect(url).timeout(10*10000);
+            document = connect.get();
+        } catch (Exception er) {
+            throw new Exception("Unable to connect! Error: " + er);
+        }
+
+        String condition = "td.group_td";
+        Elements items = document.select(condition);
+        ArrayList<WebsiteData.Satellite.Transmitter> transmitters = new ArrayList<>();
+
+
+        for(Element item: items){
+            WebsiteData.Satellite.Transmitter tempTransmitter = new WebsiteData.Satellite.Transmitter();
+//            System.out.println(item.text());
+
+            String[] values = item.text().split("\\) ");
+            String[] leftValues = values[0].split(" ");
+            String[] rightValues = values[1].split(" ");
+
+
+//            // get band
+//            String band = leftValues[1];
+//            System.out.println("Band: " + band);
+
+            // get frequency
+            try{
+                tempTransmitter.setFrequency(Integer.parseInt(leftValues[2]));
+            }catch (Exception er){
+                scraper.warn("Cant scrape transmitter freq: " + er);
+            }
+
+            // get polarisation
+            tempTransmitter.setPolarisation(leftValues[3].charAt(0));
+
+            //get SR
+            try {
+                tempTransmitter.setSymbolRate(Integer.parseInt(leftValues[4]));
+            }catch (Exception er){
+                scraper.warn("Can't scrape Symbol Rate");
+            }
+
+            //get SR
+            tempTransmitter.setFec(leftValues[5]);
+
+            //get beam
+            tempTransmitter.setBeam(rightValues[0]);
+
+            //get modulation
+            tempTransmitter.setModulation(rightValues[1]);
+
+            //get format
+            tempTransmitter.setStandard(rightValues[2]);
+
+            transmitters.add(tempTransmitter);
+
+//            System.out.println(tempTransmitter);
+        }
+        return transmitters;
     }
 
     public void addDataFromOtherSites(){

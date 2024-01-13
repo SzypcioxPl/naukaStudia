@@ -6,6 +6,7 @@ import scraper.WebsiteData;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Menu {
@@ -238,35 +239,58 @@ public class Menu {
                 }
             }
 
+            boolean runSort = true;
             switch (choice) {
                 case 1:
-                    System.out.print("Type name: ");
-                    name = scanner.next();
 
-                    for (WebsiteData.Satellite sat : SatelliteList){
-                        if(sat.getNames().get(0).contains(name)){
-                            SortedSatList.add(sat);
-                            similarNames.add(sat.getNames().get(0));
+                    while(runSort){
+                        System.out.print("Type name: ");
+                        name = scanner.next();
+
+                        boolean nameExist = false;
+                        for (WebsiteData.Satellite sat : SatelliteList){
+                            if(sat.getNames().get(0).contains(name)){
+                                SortedSatList.add(sat);
+                                similarNames.add(sat.getNames().get(0));
+                                nameExist = true;
+                            }
+                        }
+
+                        boolean runNameChoose = true;
+                        if(nameExist){
+                            while(runNameChoose){
+                                int whichName=0;
+                                System.out.println("\nNames Similar to Given:");
+                                System.out.println("   - -1"+": End Sort");
+
+                                for(String tempName: similarNames){
+                                    System.out.println("   - " + whichName + ": " + tempName);
+                                    whichName++;
+                                }
+
+
+                                int choosedName = -1;
+                                try{
+                                    System.out.print("\nChoose sat: ");
+                                    choosedName = scanner.nextInt();
+                                }catch (Exception er){
+                                    menu.warn("Error while choosing sat name");
+                                }
+
+                                if(Objects.equals(choosedName, -1)){
+                                    runNameChoose = false;
+                                }else {
+                                    System.out.println(SortedSatList.get(choosedName).toString());
+                                }
+
+                                runSort = false;
+                            }
+                        }else {
+                            System.out.println("There is no Satellite with name similar to provided.");
                         }
                     }
 
 
-                    int whichName=0;
-
-                    System.out.println("Names Similar to Given: \n");
-                    for(String tempName: similarNames){
-                        System.out.println("   - " + whichName + ": " + tempName);
-                        whichName++;
-                    }
-
-                    int choosedName = -1;
-                    try{
-                        choosedName = scanner.nextInt();
-                    }catch (Exception er){
-                        menu.warn("Error while choosing sat name");
-                    }
-
-                    System.out.println(SortedSatList.get(choosedName).toString());
 
                     break;
                 case 2:

@@ -1,6 +1,7 @@
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import scraper.SatBeamScraper;
+import test.TestKingOfSat;
 import test.TestTranslation;
 
 import javax.swing.*;
@@ -13,6 +14,7 @@ public class Main {
     private static SatBeamScraper scraper = new SatBeamScraper();
 
     private static TestTranslation testTranslation = new TestTranslation();
+    private  static TestKingOfSat testKingOfSat = new TestKingOfSat();
 
     private static Menu menu = new Menu();
 
@@ -26,6 +28,8 @@ public class Main {
         }catch (Exception er){
             main.error("Error: " + er.getMessage());
         }
+
+        main.info("End of program");
 
     }
 }

@@ -24,6 +24,24 @@ public class WebsiteData {
         //for tests
         @Override
         public String toString() {
+            String transmittersString = "null";
+
+            if(this.transmitters != null){
+                transmittersString = "\n";
+
+                for(Transmitter transmitter : this.transmitters){
+                    transmittersString = transmittersString +
+                            "         - Freq.: " + transmitter.getFrequency() + ", " +
+                            "Polarisation: " + transmitter.getPolarisation() + ", " +
+                            "Transponder: " + transmitter.getTransponder() + ", " +
+                            "Beam: " + transmitter.getBeam() + ", " +
+                            "Standard: " + transmitter.getStandard() + ", " +
+                            "Modulation: " + transmitter.getModulation() + ", " +
+                            "Symbol Rate: " + transmitter.getSymbolRate() + ", " +
+                            "Fec: " + transmitter.getFec() + "\n";
+                }
+            }
+
             return "Satellite{" + "\n" +
                     "   - norad = " + norad + "\n" +
                     "   - names = '" + names + "'\n" +
@@ -38,7 +56,7 @@ public class WebsiteData {
                     "   - satelliteManufacturer = '" + satelliteManufacturer + "'\n" +
                     "   - satelliteModel = '" + satelliteModel + "'\n" +
                     "   - satelliteExpectedLifetime = " + satelliteExpectedLifetime + "\n" +
-                    "   - transmitters = " + transmitters + '}';
+                    "   - transmitters: " + transmittersString + '}';
         }
 
         //        TODO: Class need to be public otherwise we will not be able to access it from other packages
@@ -208,7 +226,7 @@ public class WebsiteData {
         }
 
 
-        public class Transmitter {
+        public static class Transmitter {
 
             private int frequency;
             private char polarisation;

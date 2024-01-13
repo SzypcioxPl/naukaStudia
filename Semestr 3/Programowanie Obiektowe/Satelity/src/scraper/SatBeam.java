@@ -47,7 +47,7 @@ public class SatBeam {
 
     private String comments;
 
-
+    private ArrayList<WebsiteData.Satellite.Transmitter> transmitters;
 
     public Long getId() {
         return id;
@@ -169,6 +169,14 @@ public class SatBeam {
         this.expectedLifetime = expectedLifetime;
     }
 
+    public ArrayList<WebsiteData.Satellite.Transmitter> getTransmitters() {
+        return transmitters;
+    }
+
+    public void setTransmitters(ArrayList<WebsiteData.Satellite.Transmitter> transmitters) {
+        this.transmitters = transmitters;
+    }
+
     @Override
     public String toString() {
         return "SatBeam{" + "\n" +
@@ -228,6 +236,7 @@ public class SatBeam {
         satellite.setSatelliteManufacturer(this.manufacturer);
         satellite.setSatelliteModel(this.satelliteModel);
         satellite.setSatelliteExpectedLifetime(this.expectedLifetime);
+        satellite.setTransmitters(this.transmitters);
 
         return satellite;
     }
@@ -269,6 +278,7 @@ public class SatBeam {
         satellite.setSatelliteManufacturer(this.manufacturer);
         satellite.setSatelliteModel(this.satelliteModel);
         satellite.setSatelliteExpectedLifetime(this.expectedLifetime);
+        satellite.setTransmitters(this.transmitters);
 
         return satellite;
     }

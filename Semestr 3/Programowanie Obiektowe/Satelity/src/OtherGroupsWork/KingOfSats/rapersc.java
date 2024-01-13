@@ -78,11 +78,11 @@ public class rapersc {
 //
 //	}
 	
-	ArrayList<ArrayList<String>> getscrapedDataMain (){
+	public ArrayList<ArrayList<String>> getscrapedDataMain(){
 		return scrapedDataMain;
 	}
 	
-	ArrayList<ArrayList<ArrayList<String>>> getscrapedDataInSat (){
+	public ArrayList<ArrayList<ArrayList<String>>> getscrapedDataInSat (){
 		return scrapedDataInSat;
 	}
 

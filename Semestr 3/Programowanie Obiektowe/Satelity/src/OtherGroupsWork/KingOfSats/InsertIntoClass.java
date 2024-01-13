@@ -45,14 +45,14 @@ public class InsertIntoClass {
 	            names.add(s.substring(s.indexOf("(") + 1, s.indexOf(")")));
 	            satelita.setNames(names);
             }
+
+//            satelita.setNorad(Integer.parseInt(data_set.get(2)));
+//            float OrbitalPosition = parseAngle(data_set.get(0));
+//            float actualPosition = parseAngle(data_set.get(7));
+//            satelita.setOrbitalPosition(OrbitalPosition);
+//            satelita.setActualPosition(actualPosition);
             
-            satelita.setNorad(Integer.parseInt(data_set.get(2)));
-            float OrbitalPosition = parseAngle(data_set.get(0));
-            float actualPosition = parseAngle(data_set.get(7));        
-            satelita.setOrbitalPosition(OrbitalPosition);
-            satelita.setActualPosition(actualPosition);
-            
-            satelita.setTransmitters(oneSatTransList.get(counter));
+//            satelita.setTransmitters(oneSatTransList.get(counter));
             satelitaList.add(satelita);
             counter++;
         }
@@ -66,7 +66,7 @@ public class InsertIntoClass {
             ArrayList<Transmitter> transmittersList = new ArrayList<>();
             for (int i = 1; i < data_set.size(); i++) {
                 ArrayList<String> one_transmitter = data_set.get(i);
-                Transmitter transmitter = new Satellite().new Transmitter();
+                Transmitter transmitter = new Transmitter();
 
                 String frequencyStr = one_transmitter.get(2).replace(",", "");
 
@@ -85,6 +85,7 @@ public class InsertIntoClass {
             }
             oneSatTransList.add(transmittersList);
         }
+
     }
 
     public static float parseAngle(String angle) {

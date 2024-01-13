@@ -66,7 +66,7 @@ public class SatBeamScraper {
         for (int i = rangeStart; i <= rangeEnd; i++) {
 
             // loading animation
-            String data = "\r  Scraped Sat's with '" + status + "' status: " + scrapedSatCount + "   " +  anim.charAt(i% anim.length()) + "   ";
+            String data = "\r  Scraped Sat's with '" + status + "' status: " + scrapedSatCount + "   " +  anim.charAt(i% anim.length()) + "   \n";
             System.out.write(data.getBytes());
             if(i == rangeEnd){System.out.println("\n");}
 
@@ -111,10 +111,10 @@ public class SatBeamScraper {
                                         try{
                                             tempSat = this.GetAdditionalData(link, tempSat);
                                         }catch (Exception er){
-                                            scraper.error("While getting additional data to Sat with id = " + tempSat.getId() + " error occured: " + er);
+                                            scraper.error("While getting additional data to Sat with id = " + tempSat.getId() + " error occured: " + er.getMessage());
                                         }
                                     }catch (Exception er){
-                                        scraper.error("While scraping url to more detailed info about Sat error occured: " + er);
+                                        scraper.error("While scraping url to more detailed info about Sat error occured: " + er.getMessage());
                                     }
                                     break;
                                 case 4:
@@ -261,7 +261,7 @@ public class SatBeamScraper {
                 scraper.warn("Error while getting data about Transmitters for sat with id: " + tempSat.getId() + ", error: "+ er);
             }
         }else{
-            System.out.println("Doesn't have transmitters");
+//            System.out.println("Doesn't have transmitters");
         }
 
         return tempSat;
@@ -301,30 +301,53 @@ public class SatBeamScraper {
             try{
                 tempTransmitter.setFrequency(Integer.parseInt(leftValues[2]));
             }catch (Exception er){
-                scraper.warn("Cant scrape transmitter freq: " + er);
+                scraper.warn("Cant scrape freq: " + er.getMessage());
             }
 
-            // get polarisation
-            tempTransmitter.setPolarisation(leftValues[3].charAt(0));
+            try{
+                // get polarisation
+                tempTransmitter.setPolarisation(leftValues[3].charAt(0));
+            }catch (Exception er){
+                scraper.warn("Can't scrape polarisation: " + er.getMessage());
+            }
+
 
             //get SR
             try {
                 tempTransmitter.setSymbolRate(Integer.parseInt(leftValues[4]));
             }catch (Exception er){
-                scraper.warn("Can't scrape Symbol Rate");
+                scraper.warn("Can't scrape Symbol Rate: " + er.getMessage());
             }
 
-            //get SR
-            tempTransmitter.setFec(leftValues[5]);
+            try{
+                //get FEC
+                tempTransmitter.setFec(leftValues[5]);
+            }catch (Exception er){
+                scraper.warn("Can't scrape SR: " + er.getMessage());
+            }
 
-            //get beam
-            tempTransmitter.setBeam(rightValues[0]);
 
-            //get modulation
-            tempTransmitter.setModulation(rightValues[1]);
+            try{
+                //get beam
+                tempTransmitter.setBeam(rightValues[0]);
+            }catch (Exception er){
+                scraper.warn("Can't scrape Beam: " + er.getMessage());
+            }
 
-            //get format
-            tempTransmitter.setStandard(rightValues[2]);
+            try{
+                //get modulation
+                tempTransmitter.setModulation(rightValues[1]);
+            }catch (Exception er){
+                scraper.warn("Can't scrape modulation: " + er.getMessage());
+            }
+
+            try{
+                //get format
+                tempTransmitter.setStandard(rightValues[2]);
+            }catch (Exception er){
+                scraper.warn("Can't scrape standard: " +er.getMessage());
+            }
+
 
             transmitters.add(tempTransmitter);
 

@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 public class Menu {
     protected static final Logger menu = LogManager.getLogger();
-    public int startMenu(){
+    public int startMenu() throws InterruptedException {
 
         boolean run = true;
         boolean runMainChoice = true;
@@ -54,7 +54,7 @@ public class Menu {
         return 0;
     }
 
-    public void scrapeMenu(){
+    public void scrapeMenu() throws InterruptedException {
         boolean runScraperMenu = true;
         int rangeStart = 0;
         int rangeEnd = 0;
@@ -117,7 +117,7 @@ public class Menu {
         useScraper(rangeStart, rangeEnd, status);
     }
 
-    public void useScraper(int rangeStart, int rangeEnd, String status){
+    public void useScraper(int rangeStart, int rangeEnd, String status) throws InterruptedException {
         SatBeamScraper scraper = new SatBeamScraper();
         List<SatBeam> SatBeamList = new ArrayList<>();
         List<WebsiteData.Satellite> SatelliteList = new ArrayList<>();
@@ -133,7 +133,7 @@ public class Menu {
         useData(SatelliteList);
     }
 
-    public void useData(List<WebsiteData.Satellite> SatelliteList){
+    public void useData(List<WebsiteData.Satellite> SatelliteList) throws InterruptedException {
         boolean runUseDataMenu = true;
         boolean runUseDataChoice = true;
 
@@ -164,11 +164,32 @@ public class Menu {
             switch (choice) {
                 case 1:
                     System.out.println("Satellite One");
-                    printSatBySetInfo();
+                    printSatBySetInfo(SatelliteList);
                     break;
                 case 2:
+                    int whichSat = 0;
+                    String printAll = "no";
+
                     for(WebsiteData.Satellite sat: SatelliteList){
                         System.out.println(sat.toString());
+                        whichSat++;
+                        Thread.sleep(100);
+                        if(printAll != "all"){
+                            if(whichSat % 5 == 0){
+
+                                System.out.print("Provide 'n' and click Enter to continue, and print next 5 Satellites or provide 'all' and click Enter to print all remaining Satellites. ");
+
+                                String cont = "random";
+                                Scanner scanner = new Scanner(System.in);
+                                while(!cont.equals("n") && !cont.equals("all")) {
+                                    System.out.print("\nProvide choice: ");
+                                    cont = scanner.nextLine();
+                                    if(cont.equals("all")){
+                                        printAll = "all";
+                                    }
+                                }
+                            }
+                        }
                     }
                     break;
                 case 3:
@@ -179,10 +200,92 @@ public class Menu {
         }
     }
 
-    public void printSatBySetInfo(){
+    public void printSatBySetInfo(List<WebsiteData.Satellite> SatelliteList){
         boolean getInfo = true;
+        List<WebsiteData.Satellite> SortedSatList = new ArrayList<>();
 
-        System.out.println("Work in progress!");
+        String name = "";
+        int norad = 0;
+
+        List<String> similarNames = new ArrayList<>();
+
+
+
+
+        while (getInfo){
+            getInfo = true;
+            System.out.println("\n================= Choose type of sorting ================");
+            System.out.println("  - 1: By name");
+            System.out.println("  - 2: By norad");
+//            System.out.println("  - 3: By operator");
+//            System.out.println("  - 4: By launch site");
+//            System.out.println("  - 5: Manufacturer");
+//            System.out.println("  - 6: Orbital Position");
+
+            int choice = -1;
+            Scanner scanner = new Scanner(System.in);
+            while(getInfo){
+                try {
+                    System.out.print("Choose: ");
+                    choice = scanner.nextInt();
+                    if (choice != 1 && choice != 2 && choice != 3 && choice != 4) {
+                        throw new Exception("Wrong value. Try again!\n");
+                    }
+
+                    getInfo = false;
+                }catch (Exception er){
+                    menu.warn("Error while choosing sort method: " + er);
+                }
+            }
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Type name: ");
+                    name = scanner.next();
+
+                    for (WebsiteData.Satellite sat : SatelliteList){
+                        if(sat.getNames().get(0).contains(name)){
+                            SortedSatList.add(sat);
+                            similarNames.add(sat.getNames().get(0));
+                        }
+                    }
+
+
+                    int whichName=0;
+
+                    System.out.println("Names Similar to Given: \n");
+                    for(String tempName: similarNames){
+                        System.out.println("   - " + whichName + ": " + tempName);
+                        whichName++;
+                    }
+
+                    int choosedName = -1;
+                    try{
+                        choosedName = scanner.nextInt();
+                    }catch (Exception er){
+                        menu.warn("Error while choosing sat name");
+                    }
+
+                    System.out.println(SortedSatList.get(choosedName).toString());
+
+                    break;
+                case 2:
+                    System.out.print("Type Norad: ");
+                    norad = scanner.nextInt();
+
+                    boolean exist = false;
+                    for (WebsiteData.Satellite sat : SatelliteList){
+                        if(sat.getNorad() == norad){
+                            System.out.print(sat.toString());
+                            exist = true;
+                        }
+                    }
+                    if(!exist){
+                        System.out.print("There is no Sat with provided Norad");
+                    }
+                    break;
+            }
+        }
 
     }
 

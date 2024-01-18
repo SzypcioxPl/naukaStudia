@@ -1,3 +1,5 @@
+import OtherGroupsWork.LyngSat.LyngSat;
+import OtherGroupsWork.Merge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import scraper.SatBeam;
@@ -11,6 +13,9 @@ import java.util.Scanner;
 
 public class Menu {
     protected static final Logger menu = LogManager.getLogger();
+    private static LyngSat scraperLyngSat = new LyngSat();
+
+    private static Merge merge = new Merge();
     public int startMenu() throws InterruptedException {
 
         boolean run = true;
@@ -126,7 +131,13 @@ public class Menu {
         System.out.println("\n");
         try {
             SatBeamList = scraper.ScrapeData(rangeStart, rangeEnd, status);
+
             SatelliteList = scraper.SatBeamListToSatellites(SatBeamList);
+            System.out.println("Scraping LyngSat");
+            List<WebsiteData.Satellite> satsLyngSat = scraperLyngSat.ScrapeLyngSat();
+            List<WebsiteData.Satellite> LyngSatNotInSatBeam = merge.listOfLyngSatNotInSatBeam(satsLyngSat, SatelliteList);
+            System.out.println("Adding LyngSat to SatBeam");
+            SatelliteList.addAll(LyngSatNotInSatBeam);
         }catch (Exception er){
             menu.warn("Error in useScraper: " + er);
         }

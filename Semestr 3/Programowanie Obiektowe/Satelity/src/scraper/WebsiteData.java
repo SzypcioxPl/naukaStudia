@@ -76,7 +76,7 @@ public class WebsiteData {
         private String satelliteManufacturer;
         private String satelliteModel;
         private String satelliteExpectedLifetime;
-        private ArrayList<Transmitter> transmitters;
+        public ArrayList<Transmitter> transmitters = new ArrayList<>();
 
         public Satellite() {}
         public Satellite(int norad,  ArrayList<String> names, String operator, String status, float orbitalPosition,
@@ -225,11 +225,22 @@ public class WebsiteData {
             return this;
         }
 
+        public Satellite addName(String name) {
+            this.names.add(name);
+            return this;
+        }
+
+        public Satellite addTransmitter(Transmitter transmitter) {
+            this.transmitters.add(transmitter);
+            return this;
+        }
+
+
 
         public static class Transmitter {
 
-            private int frequency;
-            private char polarisation;
+            private float frequency;
+            private Character polarisation;
             private String transponder;
             private String beam;
             private String standard;
@@ -238,7 +249,7 @@ public class WebsiteData {
             private String fec; // probably not a good idea to write 2/3 as a float due to precision loss
 
             public Transmitter() {}
-            public Transmitter(int frequency, char polarisation, String transponder, String beam, String standard,
+            public Transmitter(float frequency, Character polarisation, String transponder, String beam, String standard,
                                String modulation, int symbolRate, String fec) {
                 this.frequency = frequency;
                 this.polarisation = polarisation;
@@ -250,11 +261,11 @@ public class WebsiteData {
                 this.fec = fec;
             }
 
-            public int getFrequency() {
+            public float getFrequency() {
                 return frequency;
             }
 
-            public char getPolarisation() {
+            public Character getPolarisation() {
                 return polarisation;
             }
 
@@ -282,12 +293,12 @@ public class WebsiteData {
                 return fec;
             }
 
-            public Transmitter setFrequency(int frequency) {
+            public Transmitter setFrequency(float frequency) {
                 this.frequency = frequency;
                 return this;
             }
 
-            public Transmitter setPolarisation(char polarisation) {
+            public Transmitter setPolarisation(Character polarisation) {
                 this.polarisation = polarisation;
                 return this;
             }

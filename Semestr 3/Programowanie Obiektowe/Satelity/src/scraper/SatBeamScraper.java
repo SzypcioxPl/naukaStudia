@@ -11,7 +11,7 @@ import org.jsoup.select.Elements;
 import java.text.ParseException;
 import java.util.*;
 
-public class SatBeamScraper {
+public class SatBeamScraper extends WebsiteData {
 
     protected static final Logger scraper = LogManager.getLogger();
 
@@ -283,9 +283,9 @@ public class SatBeamScraper {
         Elements items = document.select(condition);
         ArrayList<WebsiteData.Satellite.Transmitter> transmitters = new ArrayList<>();
 
-
+        WebsiteData.Satellite tempSat = new Satellite();
         for(Element item: items){
-            WebsiteData.Satellite.Transmitter tempTransmitter = new WebsiteData.Satellite.Transmitter();
+            WebsiteData.Satellite.Transmitter tempTransmitter = tempSat.new Transmitter();
 //            System.out.println(item.text());
 
             String[] values = item.text().split("\\) ");
@@ -299,7 +299,7 @@ public class SatBeamScraper {
 
             // get frequency
             try{
-                tempTransmitter.setFrequency(Integer.parseInt(leftValues[2]));
+                tempTransmitter.setFrequency(Float.parseFloat(leftValues[2]));
             }catch (Exception er){
                 scraper.warn("Cant scrape freq: " + er.getMessage());
             }

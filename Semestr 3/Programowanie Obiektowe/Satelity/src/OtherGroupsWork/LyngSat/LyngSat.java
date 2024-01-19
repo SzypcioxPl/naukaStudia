@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class LyngSat{
+public class LyngSat extends WebsiteData{
 
 
 	public List<WebsiteData.Satellite> ScrapeLyngSat() throws IOException {
@@ -75,8 +75,9 @@ public class LyngSat{
 					Element table = x.nextElementSibling();
 					int i = 2;
 					int rowspan = 0;
+					WebsiteData.Satellite tempSat = new Satellite();
 					for (Element entry: table.getElementsByTag("tbody").first().children()) {
-						WebsiteData.Satellite.Transmitter transmitter = new Transmitter();
+						WebsiteData.Satellite.Transmitter transmitter = tempSat.new Transmitter();
 //						System.out.println(entry.children().first());
 						if(--rowspan > 0)
 						{

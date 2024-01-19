@@ -1,5 +1,6 @@
 package scraper;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -19,7 +20,7 @@ public class WebsiteData {
     }
 
 
-    public static class Satellite {
+    public static class Satellite implements Serializable {
 
         //for tests
         @Override
@@ -237,20 +238,20 @@ public class WebsiteData {
 
 
 
-        public static class Transmitter {
+        public class Transmitter implements Serializable{
 
-            private float frequency;
+            private Float frequency = 0.0F;
             private Character polarisation;
             private String transponder;
             private String beam;
             private String standard;
             private String modulation;
-            private int symbolRate;
+            private Integer symbolRate = 0;
             private String fec; // probably not a good idea to write 2/3 as a float due to precision loss
 
             public Transmitter() {}
-            public Transmitter(float frequency, Character polarisation, String transponder, String beam, String standard,
-                               String modulation, int symbolRate, String fec) {
+            public Transmitter(Float frequency, Character polarisation, String transponder, String beam, String standard,
+                               String modulation, Integer symbolRate, String fec) {
                 this.frequency = frequency;
                 this.polarisation = polarisation;
                 this.transponder = transponder;
@@ -261,7 +262,7 @@ public class WebsiteData {
                 this.fec = fec;
             }
 
-            public float getFrequency() {
+            public Float getFrequency() {
                 return frequency;
             }
 
@@ -285,7 +286,7 @@ public class WebsiteData {
                 return modulation;
             }
 
-            public int getSymbolRate() {
+            public Integer getSymbolRate() {
                 return symbolRate;
             }
 
@@ -293,7 +294,7 @@ public class WebsiteData {
                 return fec;
             }
 
-            public Transmitter setFrequency(float frequency) {
+            public Transmitter setFrequency(Float frequency) {
                 this.frequency = frequency;
                 return this;
             }
@@ -323,7 +324,7 @@ public class WebsiteData {
                 return this;
             }
 
-            public Transmitter setSymbolRate(int symbolRate) {
+            public Transmitter setSymbolRate(Integer symbolRate) {
                 this.symbolRate = symbolRate;
                 return this;
             }

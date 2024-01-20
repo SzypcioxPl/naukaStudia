@@ -43,8 +43,9 @@ public class LyngSat extends WebsiteData{
 
 		int counter = 0;
 		for (String sat : satLinks) {
-			System.out.write(("\rNumber of iteration in LyngSat: " + counter).getBytes());
+			System.out.write(("\rLyngSat: " + counter + "\n").getBytes());
 			counter++;
+
 			String satName = null;
 			Float satActPos = null;
 			WebsiteData.Satellite thisSat = new WebsiteData.Satellite();

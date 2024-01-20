@@ -1,3 +1,4 @@
+import OtherGroupsWork.KingOfSats.InsertIntoClass;
 import OtherGroupsWork.LyngSat.LyngSat;
 import OtherGroupsWork.Merge;
 import org.apache.logging.log4j.LogManager;
@@ -5,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import scraper.SatBeam;
 import scraper.SatBeamScraper;
 import scraper.WebsiteData;
+import utils.Serialization;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +27,9 @@ public class Menu {
 
                 System.out.println("===================== Satellites Project Menu ==========");
                 System.out.println("Choose action ");
-                System.out.println("  - 1: Scrape Data");
-                System.out.println("  - 2: End Program");
+            System.out.println("  - 1: Scrape Data");
+            System.out.println("  - 2: Load Data from Database");
+            System.out.println("  - 0: End Program");
 
 
             int choice = -1;
@@ -35,7 +38,7 @@ public class Menu {
                 try{
                     Scanner scanner = new Scanner(System.in);
                     choice = scanner.nextInt();
-                    if(choice != 1 && choice !=2){
+                    if(choice != 1 && choice !=2 && choice !=0){
                         throw new Exception("Wrong value. Try again!\n");
                     }
 
@@ -47,12 +50,16 @@ public class Menu {
 
 
             switch (choice) {
+                case 0:
+                    return 0;
                 case 1:
                     run = false;
-                    scrapeMenu();
+                    scrapeMenu("scrape_data");
                     break;
                 case 2:
-                    return 0;
+                    run = false;
+                    scrapeMenu("load_data");
+
             }
 
         }
@@ -60,67 +67,97 @@ public class Menu {
         return 0;
     }
 
-    public void scrapeMenu() throws InterruptedException {
+    public void scrapeMenu(String choice) throws InterruptedException {
         boolean runScraperMenu = true;
         int rangeStart = 0;
         int rangeEnd = 0;
         String status = "";
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("\n===================== Set Options For Scraper ==========");
-        while(runScraperMenu){
-            System.out.print("Range Start (ID of first Sat to scrap; min 1): ");
-            try{
-                rangeStart = scanner.nextInt();
+        if(Objects.equals(choice, "scrape_data")){
+            System.out.println("\n===================== Set Options For Scraper ==========");
+            while(runScraperMenu){
+                System.out.print("Range Start (ID of first Sat to scrap; min 1): ");
+                try{
+                    rangeStart = scanner.nextInt();
 
-                if(rangeStart <= 0 || rangeStart >= 609) {
-                    throw new Exception("Start of range must be between 1 and 608");
+                    if(rangeStart <= 0 || rangeStart >= 609) {
+                        throw new Exception("Start of range must be between 1 and 608");
+                    }
+                    runScraperMenu = false;
+                }catch (Exception er){
+                    menu.warn(er.getMessage());
                 }
-                runScraperMenu = false;
-            }catch (Exception er){
-                menu.warn(er.getMessage());
             }
-        }
 
-        runScraperMenu = true;
-        while(runScraperMenu){
-            System.out.print("Range End (ID of last Sat to scrap; max 608): ");
-            try{
-                rangeEnd = scanner.nextInt();
+            runScraperMenu = true;
+            while(runScraperMenu){
+                System.out.print("Range End (ID of last Sat to scrap; max 608): ");
+                try{
+                    rangeEnd = scanner.nextInt();
 
-                if(rangeEnd > 609 || rangeEnd <= rangeStart-1){
-                    throw new Exception("End of range must be between " + rangeStart + " and 608");
+                    if(rangeEnd > 609 || rangeEnd <= rangeStart-1){
+                        throw new Exception("End of range must be between " + rangeStart + " and 608");
+                    }
+                    runScraperMenu = false;
+                }catch (Exception er){
+                    menu.warn(er.getMessage());
                 }
-                runScraperMenu = false;
-            }catch (Exception er){
-                menu.warn(er.getMessage());
             }
-        }
 
-        runScraperMenu = true;
-        while(runScraperMenu){
-            System.out.print("Status(any, active, deorbited, failed, retired) ");
-            System.out.print("Status (Info about Sats current condition): ");
-            try{
-                status = scanner.next();
+            runScraperMenu = true;
+            while(runScraperMenu){
+                System.out.print("Status(any, active, deorbited, failed, retired) ");
+                System.out.print("Status (Info about Sats current condition): ");
+                try{
+                    status = scanner.next();
 
-                if(!status.contains("active") && !status.contains("deorbited") && !status.contains("retired") && !status.contains("failed") && !status.contains("any")){
-                    throw new Exception("Provided wrong type of status");
+                    if(!status.contains("active") && !status.contains("deorbited") && !status.contains("retired") && !status.contains("failed") && !status.contains("any")){
+                        throw new Exception("Provided wrong type of status");
+                    }
+                    runScraperMenu = false;
+                }catch (Exception er){
+                    menu.warn(er.getMessage());
                 }
-                runScraperMenu = false;
-            }catch (Exception er){
-                menu.warn(er.getMessage());
             }
-        }
 
-        runScraperMenu = false;
+            runScraperMenu = false;
 
 //        System.out.println("Chooses");
 //        System.out.println("Chooses 1: " + rangeStart);
 //        System.out.println("Chooses 2: " + rangeEnd);
 //        System.out.println("Chooses 3: " + status);
 
-        useScraper(rangeStart, rangeEnd, status);
+            useScraper(rangeStart, rangeEnd, status); 
+        } else if (Objects.equals(choice,"load_data")) {
+            Serialization service = new Serialization();
+            try{
+                WebsiteData SatBeam = service.SerializeInput("satbeam");
+                WebsiteData LyngSat = service.SerializeInput("lyngsat");
+                WebsiteData KingOfSat = service.SerializeInput("kingofsat");
+
+                List<WebsiteData.Satellite> satList = new ArrayList<>();
+
+                List<WebsiteData.Satellite> LyngSatNotInSatBeam = merge.listOfLyngSatNotInSatBeam(LyngSat.getSatellites(), SatBeam.getSatellites());
+                List<WebsiteData.Satellite> KingOfSatNotInSatBeam = merge.listOfKingOfSatNotInSatBeam(KingOfSat.getSatellites(), SatBeam.getSatellites());
+
+                satList.addAll(SatBeam.getSatellites());
+//                satList = merge.mergeLyngSatToSatBeam(LyngSat.getSatellites(), satList);
+//                satList = merge.mergeKingOfSatToSatBeam(KingOfSat.getSatellites(), satList);
+
+
+                satList.addAll(LyngSatNotInSatBeam);
+                satList.addAll(KingOfSatNotInSatBeam);
+
+                // here we can skip function useScraper and go to useData
+                useData(satList);
+
+            }catch (Exception er){
+                menu.warn("Can't deserialize data: " + er);
+            }
+        }
+
+
     }
 
     public void useScraper(int rangeStart, int rangeEnd, String status) throws InterruptedException {
@@ -130,14 +167,37 @@ public class Menu {
 
         System.out.println("\n");
         try {
+            // scrape SatBeam
             SatBeamList = scraper.ScrapeData(rangeStart, rangeEnd, status);
+            List<WebsiteData.Satellite> satsSatBeam = scraper.SatBeamListToSatellites(SatBeamList);
+            Serialization service = new Serialization();
+            service.SerializeOutput(new WebsiteData().setSatellites((ArrayList<WebsiteData.Satellite>) satsSatBeam), "satbeam");
 
-            SatelliteList = scraper.SatBeamListToSatellites(SatBeamList);
+            // scrape LyngSat
             System.out.println("Scraping LyngSat");
             List<WebsiteData.Satellite> satsLyngSat = scraperLyngSat.ScrapeLyngSat();
+            service.SerializeOutput(new WebsiteData().setSatellites((ArrayList<WebsiteData.Satellite>) satsLyngSat), "lyngsat");
             List<WebsiteData.Satellite> LyngSatNotInSatBeam = merge.listOfLyngSatNotInSatBeam(satsLyngSat, SatelliteList);
             System.out.println("Adding LyngSat to SatBeam");
             SatelliteList.addAll(LyngSatNotInSatBeam);
+
+            // scrape KingOfSat
+            WebsiteData KingOfSat = new WebsiteData();
+            InsertIntoClass GETKingOfSat = new InsertIntoClass();
+            List<WebsiteData.Satellite> satsKingOfSat = GETKingOfSat.getSatelitaList();
+            KingOfSat.setSatellites((ArrayList<WebsiteData.Satellite>) satsKingOfSat);
+            service.SerializeOutput(KingOfSat, "kingofsat");
+            List<WebsiteData.Satellite> KingOfSatNotInSatBeam = merge.listOfKingOfSatNotInSatBeam(KingOfSat.getSatellites(),SatelliteList);
+
+            // merging
+//            satsSatBeam = merge.mergeLyngSatToSatBeam(satsLyngSat, satsSatBeam);
+//            satsSatBeam = merge.mergeKingOfSatToSatBeam(satsKingOfSat, satsSatBeam);
+
+
+            // after merging
+            SatelliteList.addAll(satsSatBeam);
+            SatelliteList.addAll(LyngSatNotInSatBeam);
+            SatelliteList.addAll(KingOfSatNotInSatBeam);
         }catch (Exception er){
             menu.warn("Error in useScraper: " + er);
         }
@@ -148,6 +208,8 @@ public class Menu {
     public void useData(List<WebsiteData.Satellite> SatelliteList) throws InterruptedException {
         boolean runUseDataMenu = true;
         boolean runUseDataChoice = true;
+
+        System.out.println("Count of all Satellites from SatBeam, KingOfSat and LyngSat: " + SatelliteList.size());
 
         while(runUseDataMenu){
             runUseDataChoice = true;

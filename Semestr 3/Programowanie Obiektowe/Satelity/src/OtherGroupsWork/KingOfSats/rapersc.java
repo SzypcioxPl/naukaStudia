@@ -7,16 +7,13 @@ import org.jsoup.select.Elements;
 import java.util.*;
 
 public class rapersc {
-
-	// TODO: Analyze code
-
 	//w tym arrayu sa wszystkie informacje z glownej strony, zalezy nam na pozycji, nazwie, norad, longitude; wszystkie te rzeczy sa na staluch indeksach
 	private static ArrayList<ArrayList<String>> scrapedDataMain = new ArrayList<ArrayList<String>>();
 	//3d array bo czemu nie, sa tu rzeczy z podstrony, kazdy kolejny rekord tabeli jest jako kolejny array w liscie, UWAGA PIERWSZY ELEMENT TABELI JEST ZAWSZE OPISEM PÓL - TRZEBA POMINAC, te tabele nie sa tej samej dlugosci!!!!
 	//powodzenia ;3 
 	private static ArrayList<ArrayList<ArrayList<String>>> scrapedDataInSat = new ArrayList<ArrayList<ArrayList<String>>>();
 	
-	public rapersc(){
+	public rapersc() throws IOException {
 		Document doc;
 		Elements body = null;
 		try {
@@ -37,6 +34,7 @@ public class rapersc {
 		}
 
 		int i = 0;
+		int counter = 0;
 		for (Element e : body.select("tr td a.A3")) {
 		    if (i % 2 != 0) {
 		        String address = e.attr("href");
@@ -48,6 +46,10 @@ public class rapersc {
 		        }
 
 		        if (inSat != null) {
+					try {
+						System.out.write(("\rKingOfSat: " + counter).getBytes());
+					}catch (Exception er){}
+					counter++;
 		            Elements inSatBody = inSat.select("table.frq tbody");
 		            ArrayList<ArrayList<String>> satInfoContainer = new ArrayList<ArrayList<String>>();
 		            for (Element ine : inSatBody.select("tr")) {
@@ -78,11 +80,11 @@ public class rapersc {
 //
 //	}
 	
-	public ArrayList<ArrayList<String>> getscrapedDataMain(){
+	ArrayList<ArrayList<String>> getscrapedDataMain (){
 		return scrapedDataMain;
 	}
 	
-	public ArrayList<ArrayList<ArrayList<String>>> getscrapedDataInSat (){
+	ArrayList<ArrayList<ArrayList<String>>> getscrapedDataInSat (){
 		return scrapedDataInSat;
 	}
 

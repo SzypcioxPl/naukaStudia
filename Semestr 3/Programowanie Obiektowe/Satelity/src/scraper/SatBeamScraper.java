@@ -356,16 +356,7 @@ public class SatBeamScraper extends WebsiteData {
         return transmitters;
     }
 
-    public void addDataFromOtherSites(){
 
-        // TODO: Add implementation
-
-        OtherGroupsWork.KingOfSats.rapersc kingScraper = new OtherGroupsWork.KingOfSats.rapersc();
-        OtherGroupsWork.KingOfSats.rapersc kingInsertToWebsiteData = new OtherGroupsWork.KingOfSats.rapersc();
-
-
-
-    }
 
     // translating SatBeam Objects List to WebsiteData.Satellites Objects List
     public ArrayList<WebsiteData.Satellite> SatBeamListToSatellites(List<SatBeam> satBeams) throws ParseException {

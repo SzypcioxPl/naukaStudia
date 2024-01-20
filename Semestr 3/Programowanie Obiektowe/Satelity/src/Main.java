@@ -1,3 +1,4 @@
+import OtherGroupsWork.KingOfSats.InsertIntoClass;
 import OtherGroupsWork.LyngSat.LyngSat;
 import OtherGroupsWork.Merge;
 import org.apache.logging.log4j.LogManager;
@@ -7,8 +8,10 @@ import scraper.SatBeamScraper;
 import scraper.WebsiteData;
 import test.TestKingOfSat;
 import test.TestTranslation;
+import utils.Serialization;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -21,6 +24,7 @@ public class Main {
     private static LyngSat scraperLyngSat = new LyngSat();
 
     private static Merge merge = new Merge();
+
     private static TestTranslation testTranslation = new TestTranslation();
     private  static TestKingOfSat testKingOfSat = new TestKingOfSat();
 
@@ -31,94 +35,71 @@ public class Main {
     public static void main(String[] args) throws Exception {
         main.info("Start of APP\n\n");
 
-//        try{
-//            menu.startMenu();
-//        }catch (Exception er){
-//            main.error("Error: " + er.getMessage());
-//        }
+        try{
+            menu.startMenu();
+        }catch (Exception er){
+            main.error("Error: " + er.getMessage());
+        }
 
 //        WebsiteData AllData = new WebsiteData();
 //
-        System.out.println("Scraping SatBeams");
-        List<SatBeam> sats = scraper.ScrapeData(1,1, "any");
-        List<WebsiteData.Satellite> satsSatBeam = scraper.SatBeamListToSatellites(sats);
+//        System.out.println("Scraping SatBeams");
+//        List<SatBeam> sats = scraper.ScrapeData(1,1, "any");
+//        List<WebsiteData.Satellite> satsSatBeam = scraper.SatBeamListToSatellites(sats);
 
-        System.out.println("Scraping LyngSat");
-        List<WebsiteData.Satellite> satsLyngSat = scraperLyngSat.ScrapeLyngSat();
+//        System.out.println("Scraping LyngSat");
+//        WebsiteData LyngSat = new WebsiteData();
+//        List<WebsiteData.Satellite> satsLyngSat = scraperLyngSat.ScrapeLyngSat();
+//        LyngSat.setSatellites((ArrayList<WebsiteData.Satellite>) satsLyngSat);
 //
 ////        satsLyngSat = merge.mergeSatBeamToLyngSat(satsSatBeam, satsLyngSat);
 ////        satsSatBeam = merge.mergeLyngSatToSatBeam(satsLyngSat,satsSatBeam);
 //
-        List<WebsiteData.Satellite> LyngSatNotInSatBeam = merge.listOfLyngSatNotInSatBeam(satsLyngSat, satsSatBeam);
+//        List<WebsiteData.Satellite> LyngSatNotInSatBeam = merge.listOfLyngSatNotInSatBeam(satsLyngSat, satsSatBeam);
 //
 ////        for(WebsiteData.Satellite sat : satsLyngSat){
 ////            System.out.println(sat.toString());
 ////        }
-
-        try{
-//            //Serialization SatBeam
-//            FileOutputStream satBeamFile = new FileOutputStream("SatBeam.data");
-//            ObjectOutputStream satBeamOut = new ObjectOutputStream(satBeamFile);
 //
-//            satBeamOut.writeObject(satsSatBeam);
+//            try{
+//                Serialization service = new Serialization();
 //
-//            satBeamOut.close();
-//            satBeamFile.close();
-//            System.out.println("SatBeams has been serialized");
-
-            //Serialization LyngSat
-            FileOutputStream lyngSatFile = new FileOutputStream("LyngSat.data");
-            ObjectOutputStream lyngSatOut = new ObjectOutputStream(lyngSatFile);
-
-            lyngSatOut.writeObject(LyngSatNotInSatBeam);
-
-            lyngSatOut.close();
-            lyngSatFile.close();
-            System.out.println("LyngSat has been serialized");
-
-        }catch (Exception er){
-            main.warn(er);
-        }
-
-        try{
-//            //Deserialization SatBeam
-//            FileInputStream satBeamFile = new FileInputStream("SatBeam.data");
-//            ObjectInputStream satBeamIn = new ObjectInputStream(satBeamFile);
+//                service.SerializeOutput(LyngSat, "lyngsat");
 //
-//            List<WebsiteData.Satellite> deSats = (List<WebsiteData.Satellite>)satBeamIn.readObject();
+//                WebsiteData deserialized = service.SerializeInput("lyngsat");
 //
-//            satBeamIn.close();
-//            satBeamFile.close();
-//
-//            System.out.println("Object has been deserialized ");
-//            for(WebsiteData.Satellite deSat : deSats){
-//                System.out.println(deSat.toString());
+//                int counter = 0;
+//                for(WebsiteData.Satellite sat : deserialized.getSatellites()){
+//                    System.out.println(counter + ". " + sat.getNames().getFirst());
+//                    counter ++;
+//                }
+//                counter = 0;
+//            }catch (Exception er){
+//                main.warn("Problem with serialization" + er);
 //            }
 
-            //Deserialization LyngSat
-            FileInputStream lyngSatFile = new FileInputStream("LyngSat.data");
-            ObjectInputStream lyngSatIn = new ObjectInputStream(lyngSatFile);
-
-            List<WebsiteData.Satellite> deLyngSat = (List<WebsiteData.Satellite>)lyngSatIn.readObject();
-
-            lyngSatIn.close();
-            lyngSatFile.close();
-
-            System.out.println("Object has been deserialized ");
-            for(WebsiteData.Satellite deSat : deLyngSat){
-                System.out.println(deSat.toString());
-            }
-
-        }catch (Exception er){
-            main.warn(er);
-        }
-
-
-
-
-
-
-
+//        Serialization service = new Serialization();
+//        // KingOfSat
+//        WebsiteData KingOfSat = new WebsiteData();
+//        try {
+//            InsertIntoClass GETKingOfSat = new InsertIntoClass();
+//            List<WebsiteData.Satellite> SatsKingOfSat = GETKingOfSat.getSatelitaList();
+//            KingOfSat.setSatellites((ArrayList<WebsiteData.Satellite>) SatsKingOfSat);
+//
+//    		int counter = 0;
+//    		for(WebsiteData.Satellite sats : KingOfSat.getSatellites()) {
+//    			System.out.println(sats.toString());
+//    			counter ++;
+//    		}
+////    		System.out.println("Wypisano " + counter + " satelit z KingOfSats");
+//
+//        }catch(Exception er) {System.out.println("Blad w KingOfSat");}
+//
+//        WebsiteData SatBeam = service.SerializeInput("satbeam");
+//        merge.mergeKingOfSatToSatBeam(KingOfSat.getSatellites(), SatBeam.getSatellites() );
+//
+//        merge.listOfKingOfSatNotInSatBeam(KingOfSat.getSatellites(), SatBeam.getSatellites());
+            
         main.info("End of program");
 
     }

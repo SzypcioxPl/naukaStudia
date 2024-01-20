@@ -133,20 +133,28 @@ public class Menu {
             Serialization service = new Serialization();
             try{
                 WebsiteData SatBeam = service.SerializeInput("satbeam");
+                List<WebsiteData.Satellite> satsSatBeamA1Merge = new ArrayList<>();
+                List<WebsiteData.Satellite> satsSatBeamA2Merge = new ArrayList<>();
                 WebsiteData LyngSat = service.SerializeInput("lyngsat");
                 WebsiteData KingOfSat = service.SerializeInput("kingofsat");
 
                 List<WebsiteData.Satellite> satList = new ArrayList<>();
 
-                List<WebsiteData.Satellite> LyngSatNotInSatBeam = merge.listOfLyngSatNotInSatBeam(LyngSat.getSatellites(), SatBeam.getSatellites());
-                List<WebsiteData.Satellite> KingOfSatNotInSatBeam = merge.listOfKingOfSatNotInSatBeam(KingOfSat.getSatellites(), SatBeam.getSatellites());
+                satsSatBeamA1Merge = merge.mergeOtherSatToSatBeam(LyngSat.getSatellites(), SatBeam.getSatellites());
+                satsSatBeamA2Merge = merge.mergeOtherSatToSatBeam(KingOfSat.getSatellites(), satsSatBeamA1Merge);
 
-                satList.addAll(SatBeam.getSatellites());
-//                satList = merge.mergeLyngSatToSatBeam(LyngSat.getSatellites(), satList);
-//                satList = merge.mergeKingOfSatToSatBeam(KingOfSat.getSatellites(), satList);
+                List<WebsiteData.Satellite> LyngSatNotInSatBeam = merge.listOfOtherSatNotInSatBeam(LyngSat.getSatellites(), SatBeam.getSatellites());
+                List<WebsiteData.Satellite> KingOfSatNotInSatBeam = merge.listOfOtherSatNotInSatBeam(KingOfSat.getSatellites(), SatBeam.getSatellites());
 
 
+
+
+                // after merging
+                System.out.println("Adding SatBeam To List: " + satsSatBeamA2Merge.size());
+                satList.addAll(satsSatBeamA2Merge);
+                System.out.println("Adding LyngSat To List: " + LyngSatNotInSatBeam.size());
                 satList.addAll(LyngSatNotInSatBeam);
+                System.out.println("Adding KingOfSat To List: " + KingOfSatNotInSatBeam.size());
                 satList.addAll(KingOfSatNotInSatBeam);
 
                 // here we can skip function useScraper and go to useData
@@ -177,9 +185,7 @@ public class Menu {
             System.out.println("Scraping LyngSat");
             List<WebsiteData.Satellite> satsLyngSat = scraperLyngSat.ScrapeLyngSat();
             service.SerializeOutput(new WebsiteData().setSatellites((ArrayList<WebsiteData.Satellite>) satsLyngSat), "lyngsat");
-            List<WebsiteData.Satellite> LyngSatNotInSatBeam = merge.listOfLyngSatNotInSatBeam(satsLyngSat, SatelliteList);
-            System.out.println("Adding LyngSat to SatBeam");
-            SatelliteList.addAll(LyngSatNotInSatBeam);
+            List<WebsiteData.Satellite> LyngSatNotInSatBeam = merge.listOfOtherSatNotInSatBeam(satsLyngSat, satsSatBeam);
 
             // scrape KingOfSat
             WebsiteData KingOfSat = new WebsiteData();
@@ -187,16 +193,19 @@ public class Menu {
             List<WebsiteData.Satellite> satsKingOfSat = GETKingOfSat.getSatelitaList();
             KingOfSat.setSatellites((ArrayList<WebsiteData.Satellite>) satsKingOfSat);
             service.SerializeOutput(KingOfSat, "kingofsat");
-            List<WebsiteData.Satellite> KingOfSatNotInSatBeam = merge.listOfKingOfSatNotInSatBeam(KingOfSat.getSatellites(),SatelliteList);
+            List<WebsiteData.Satellite> KingOfSatNotInSatBeam = merge.listOfOtherSatNotInSatBeam(KingOfSat.getSatellites(),satsSatBeam);
 
             // merging
-//            satsSatBeam = merge.mergeLyngSatToSatBeam(satsLyngSat, satsSatBeam);
-//            satsSatBeam = merge.mergeKingOfSatToSatBeam(satsKingOfSat, satsSatBeam);
+            satsSatBeam = merge.mergeOtherSatToSatBeam(satsLyngSat, satsSatBeam);
+            satsSatBeam = merge.mergeOtherSatToSatBeam(satsKingOfSat, satsSatBeam);
 
 
             // after merging
+            System.out.println("Adding SatBeam To List: " + satsSatBeam.size());
             SatelliteList.addAll(satsSatBeam);
+            System.out.println("Adding LyngSat To List: " + LyngSatNotInSatBeam.size());
             SatelliteList.addAll(LyngSatNotInSatBeam);
+            System.out.println("Adding KingOfSat To List: " + KingOfSatNotInSatBeam.size());
             SatelliteList.addAll(KingOfSatNotInSatBeam);
         }catch (Exception er){
             menu.warn("Error in useScraper: " + er);
@@ -322,7 +331,7 @@ public class Menu {
 
                         boolean nameExist = false;
                         for (WebsiteData.Satellite sat : SatelliteList){
-                            if(sat.getNames().get(0).contains(name)){
+                            if(sat.getNames().get(0).toLowerCase().contains(name.toLowerCase())){
                                 SortedSatList.add(sat);
                                 similarNames.add(sat.getNames().get(0));
                                 nameExist = true;

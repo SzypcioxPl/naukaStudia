@@ -8,96 +8,108 @@ import java.util.Objects;
 
 public class Merge {
 
-    public List<WebsiteData.Satellite> mergeSatBeamToLyngSat(List<WebsiteData.Satellite> SatBeams, List<WebsiteData.Satellite> LyngSats){
+    public List<WebsiteData.Satellite> mergeSatBeamToOtherSat(List<WebsiteData.Satellite> SatBeams, List<WebsiteData.Satellite> OtherSats){
 
         List <WebsiteData.Satellite> tempSatList = new ArrayList<>();
         int counter = 0;
 
         boolean updated = false;
-        for(WebsiteData.Satellite LSat: LyngSats ){
-            for(WebsiteData.Satellite SSats: SatBeams){
-                if(SSats.getNames().getFirst().contains(LSat.getNames().getFirst())){
+        for(WebsiteData.Satellite OSat: OtherSats ){
+            for(WebsiteData.Satellite SSat: SatBeams){
+                if(SSat.getNames().getFirst().contains(OSat.getNames().getFirst())){
                     counter++;
                     updated = true;
                     //update norad
-                    if(Objects.equals(LSat.getNorad(), 0)){
-                        LSat.setNorad(SSats.getNorad());
+                    if(Objects.equals(OSat.getNorad(), 0)){
+                        OSat.setNorad(SSat.getNorad());
                     }
 
                     // update operator
-                    if(Objects.equals(LSat.getOperator(), null)){
-                        LSat.setOperator(SSats.getOperator());
+                    if(Objects.equals(OSat.getOperator(), null)){
+                        OSat.setOperator(SSat.getOperator());
                     }
 
                     //update status
-                    if(Objects.equals(LSat.getStatus(), null)){
-                        LSat.setStatus(SSats.getStatus());
+                    if(Objects.equals(OSat.getStatus(), null)){
+                        OSat.setStatus(SSat.getStatus());
                     }
 
                     //update orbital position
-                    if(Objects.equals(LSat.getOrbitalPosition(), 0.0)){
-                        LSat.setOrbitalPosition(SSats.getOrbitalPosition());
+                    if(Objects.equals(OSat.getOrbitalPosition(), 0.0F)){
+                        OSat.setOrbitalPosition(SSat.getOrbitalPosition());
+                    }
+
+                    //update actual position
+                    if(Objects.equals(OSat.getActualPosition(), 0.0F)){
+                        OSat.setActualPosition(SSat.getActualPosition());
                     }
 
                     // update launch date
-                    if(Objects.equals(LSat.getLaunchDate(), null)){
-                        LSat.setLaunchDate(SSats.getLaunchDate());
+                    if(Objects.equals(OSat.getLaunchDate(), null)){
+                        OSat.setLaunchDate(SSat.getLaunchDate());
                     }
 
                     // update launch site
-                    if(Objects.equals(LSat.getLaunchSite(), null)){
-                        LSat.setLaunchSite(SSats.getLaunchSite());
+                    if(Objects.equals(OSat.getLaunchSite(), null)){
+                        OSat.setLaunchSite(SSat.getLaunchSite());
                     }
 
                     // update launch mass
-                    if(Objects.equals(LSat.getLaunchMass(), 0.0)){
-                        LSat.setLaunchMass(SSats.getLaunchMass());
+                    if(Objects.equals(OSat.getLaunchMass(), 0.0)){
+                        OSat.setLaunchMass(SSat.getLaunchMass());
                     }
 
                     // update launch vehicle
-                    if(Objects.equals(LSat.getLaunchVehicle(), null)){
-                        LSat.setLaunchVehicle(SSats.getLaunchVehicle());
+                    if(Objects.equals(OSat.getLaunchVehicle(), null)){
+                        OSat.setLaunchVehicle(SSat.getLaunchVehicle());
                     }
 
                     // update satellite manufacturer
-                    if(Objects.equals(LSat.getSatelliteManufacturer(), null)){
-                        LSat.setSatelliteManufacturer(SSats.getSatelliteManufacturer());
+                    if(Objects.equals(OSat.getSatelliteManufacturer(), null)){
+                        OSat.setSatelliteManufacturer(SSat.getSatelliteManufacturer());
                     }
 
                     // update satellite model
-                    if(Objects.equals(LSat.getSatelliteModel(), null)){
-                        LSat.setSatelliteModel(SSats.getSatelliteModel());
+                    if(Objects.equals(OSat.getSatelliteModel(), null)){
+                        OSat.setSatelliteModel(SSat.getSatelliteModel());
                     }
 
                     // update satellite expected lifetime
-                    if(Objects.equals(LSat.getSatelliteExpectedLifetime(), null)){
-                        LSat.setSatelliteExpectedLifetime(SSats.getSatelliteExpectedLifetime());
+                    if(Objects.equals(OSat.getSatelliteExpectedLifetime(), null)){
+                        OSat.setSatelliteExpectedLifetime(SSat.getSatelliteExpectedLifetime());
                     }
 
                     try {
                         //update transmiters
-                        if(!(Objects.equals(SSats.getTransmitters(), null)) &&(Objects.equals(LSat.getTransmitters(), null) || LSat.getTransmitters().size() < SSats.getTransmitters().size())){
-                            for(WebsiteData.Satellite.Transmitter transmitter : SSats.getTransmitters()){
-                                LSat.addTransmitter(transmitter);
+                        if(!Objects.equals(SSat.getTransmitters(), null) ){
+                            for(WebsiteData.Satellite.Transmitter transmitter : SSat.getTransmitters()){
+                                if(!Objects.equals(transmitter, null)){
+                                    String newName = (!Objects.equals(transmitter.getTransponder(), null)?(transmitter.getTransponder()+"(SatBeam)"):"(SatBeam)");
+                                    transmitter.setTransponder(newName);
+                                    OSat.addTransmitter(transmitter);
+                                }
                             }
                         }
                     }catch (Exception er){
                        System.out.println(er);
                     }
 
-                    System.out.println("\nMerged Sat wit name:" + LSat.getNames().getFirst() + "\n");
-                    tempSatList.add(LSat);
+                    System.out.println("Merged Sat with name: \n" +
+                            "   Name: " + OSat.getNames().getFirst() + " = "+ SSat.getNames().getFirst()+ "\n" +
+                            "   Norad: " + OSat.getNorad() + " = " + SSat.getNorad());
+                    tempSatList.add(OSat);
 //                    break;
                 }
             }
 
         }
-        System.out.println("Updated data of " + counter + " satellites from LyngSat :)" );
+        System.out.println("Updated data of " + counter + " satellites :)" );
 
+        // list of updated sats
         return tempSatList;
     }
 
-    public List<WebsiteData.Satellite> mergeLyngSatToSatBeam(List<WebsiteData.Satellite> LyngSats, List<WebsiteData.Satellite> SatBeams){
+    public List<WebsiteData.Satellite> mergeOtherSatToSatBeam(List<WebsiteData.Satellite> OtherSats, List<WebsiteData.Satellite> SatBeams){
 
         List <WebsiteData.Satellite> tempSatList = new ArrayList<>();
         int counter = 0;
@@ -105,45 +117,39 @@ public class Merge {
 
         for(WebsiteData.Satellite SSat: SatBeams){
             update = false;
-            for(WebsiteData.Satellite LSat: LyngSats ){
-                if(LSat.getNames().getFirst().contains(SSat.getNames().getFirst())){
-
+            for(WebsiteData.Satellite OSat: OtherSats ){
+                if(Objects.equals(SSat.getNorad(), OSat.getNorad()) || OSat.getNames().getFirst().contains(SSat.getNames().getFirst())){
 
                     // update actual position
-                    if(!Objects.equals(LSat.getActualPosition(), 0.0)){
-                        SSat.setActualPosition(LSat.getActualPosition());
+                    if(!Objects.equals(OSat.getActualPosition(), 0.0) && !Objects.equals(OSat.getActualPosition(), null)){
+                        SSat.setActualPosition(OSat.getActualPosition());
                         update = true;
                     }
 
                     try {
-                        //update transmiters
-//                        if((Objects.equals(SSat.getTransmitters(), null)) && !Objects.equals(LSat.getTransmitters(), null)){
-//                            for(WebsiteData.Satellite.Transmitter transmitter : LSat.getTransmitters()){
-//                                if(!Objects.equals(transmitter.getTransponder(), null)) {
-//                                    LSat.addTransmitter(transmitter);
-//                                    update = true;
-//                                }
-//                            }
-//                        }
-                        if(!Objects.equals(LSat.getTransmitters(), null)){
-                            for(WebsiteData.Satellite.Transmitter transmitter : LSat.getTransmitters()){
-                                String newName = (!Objects.equals(transmitter.getTransponder(), null)?transmitter.getTransponder()+"(LyngSat)":"(LyngSat)");
-                                transmitter.setTransponder(newName);
-                                SSat.addTransmitter(transmitter);
+                        if(!Objects.equals(OSat.getTransmitters(), null)){
+                            for(WebsiteData.Satellite.Transmitter transmitter : OSat.getTransmitters()){
+
+                                if(!Objects.equals(transmitter, null)){
+                                    String newName = (!Objects.equals(transmitter.getTransponder(), null)?transmitter.getTransponder()+"(OtherSat)":"(OtherSat)");
+                                    transmitter.setTransponder(newName);
+                                    SSat.addTransmitter(transmitter);
+                                }
                                 update = true;
                             }
                         }
                     }catch (Exception er){
-                        System.out.println(er);
+                        System.out.println("Can't update transmitters for " + OSat.getNames().getFirst() + ": " + er.getMessage());
                     }
 
-
-
-//                    System.out.println("Merged Sat with name:" + SSat.getNames().getFirst()); // for change, like counter
-//                    System.out.println(SSat.toString());    // testing
                     tempSatList.add(SSat);
                     if (update){
-                        update = false;
+                        // for test
+//                        System.out.println("Merged Sat with name: \n" +
+//                                "   Name: " + OSat.getNames().getFirst() + " = "+ SSat.getNames().getFirst()+ "\n" +
+//                                "   Norad: " + OSat.getNorad() + " = " + SSat.getNorad());
+//                    System.out.println(SSat.toString());    // testing
+
                         counter++;
                     }
                     break;
@@ -158,119 +164,33 @@ public class Merge {
         return tempSatList;
     }
 
-    public List<WebsiteData.Satellite> listOfLyngSatNotInSatBeam(List<WebsiteData.Satellite> LyngSats, List<WebsiteData.Satellite> SatBeams){
+    public List<WebsiteData.Satellite> listOfOtherSatNotInSatBeam(List<WebsiteData.Satellite> OtherSats, List<WebsiteData.Satellite> SatBeams){
 
         List <WebsiteData.Satellite> tempSatList = new ArrayList<>();
         int counter = 0;
         boolean inSatBeam = false;
 
-        for(WebsiteData.Satellite LSat: LyngSats){
+        for(WebsiteData.Satellite OSat: OtherSats){
             inSatBeam = false;
 
             for(WebsiteData.Satellite SSat: SatBeams ){
 
-                // if LyngSat exist in SatBeam go to next LyngSat
+                // if OtherSat exist in SatBeam go to next OtherSat
                 // check by sat name
-                if(SSat.getNames().getFirst().contains(LSat.getNames().getFirst())){
+                if(Objects.equals(SSat.getNorad(), OSat.getNorad()) || SSat.getNames().getFirst().contains(OSat.getNames().getFirst())){
                     inSatBeam = true;
                     break;
                 }
             }
 
-            // if LyngSat didn't exist in SatBeam add to list
+            // if OtherSat didn't exist in SatBeam add to list
             if(Objects.equals(inSatBeam, false)){
                 counter++;
-                System.out.println(LSat.getNames().getFirst());
-                tempSatList.add(LSat);
-            }
-            inSatBeam = false;
-
-        }
-        System.out.println("\nCount of LyngSat not in SatBeam " + counter + " satellites\n" );
-
-        return tempSatList;
-    }
-
-    public List<WebsiteData.Satellite> mergeKingOfSatToSatBeam(List<WebsiteData.Satellite> KingOfSat, List<WebsiteData.Satellite> SatBeams){
-
-        List <WebsiteData.Satellite> tempSatList = new ArrayList<>();
-        int counter = 0;
-        boolean update= false;
-
-        for(WebsiteData.Satellite SSat: SatBeams){
-            update = false;
-            for(WebsiteData.Satellite KSat: KingOfSat ){
-                if(KSat.getNames().getFirst().contains(SSat.getNames().getFirst()) || Objects.equals(KSat.getNorad(), SSat.getNorad())){
-
-
-                    // update actual position
-                    if(!Objects.equals(KSat.getActualPosition(), 0.0)){
-                        SSat.setActualPosition(KSat.getActualPosition());
-                        update = true;
-                    }
-
-                    try {
-                        //update transmiters
-                        if(!Objects.equals(KSat.getTransmitters(), null)){
-                            for(WebsiteData.Satellite.Transmitter transmitter : KSat.getTransmitters()){
-                                String newName = (!Objects.equals(transmitter.getTransponder(), null)?transmitter.getTransponder()+"(LyngSat)":"(LyngSat)");
-                                transmitter.setTransponder(newName);
-                                SSat.addTransmitter(transmitter);
-                                update = true;
-                            }
-                        }
-
-                    }catch (Exception er){
-                        System.out.println(er);
-                    }
-
-
-
-//                    System.out.println("Merged Sat with name: " + SSat.getNames().getFirst() + " - " + KSat.getNorad() + " = " + SSat.getNorad()); // for change, like counter
-//                    System.out.println(SSat.toString());    // testing
-                    tempSatList.add(SSat);
-                    if (update){
-                        update = false;
-                        counter++;
-                    }
-                    break;
-                }
-            }
-            if(update == false){
-                tempSatList.add(SSat);
+//                System.out.println(OSat.getNames().getFirst());
+                tempSatList.add(OSat);
             }
         }
-        System.out.println("Updated data of " + counter + " satellites from SatBeam :)" );
-
-        return tempSatList;
-    }
-
-    public List<WebsiteData.Satellite> listOfKingOfSatNotInSatBeam(List<WebsiteData.Satellite> KingOfSat, List<WebsiteData.Satellite> SatBeams){
-
-        List <WebsiteData.Satellite> tempSatList = new ArrayList<>();
-        int counter = 0;
-        boolean inSatBeam = false;
-
-        for(WebsiteData.Satellite KSat: KingOfSat){
-            inSatBeam = false;
-
-            for(WebsiteData.Satellite SSat: SatBeams ){
-
-                if(SSat.getNames().getFirst().contains(KSat.getNames().getFirst()) || Objects.equals(KSat.getNorad(), SSat.getNorad())){
-                    inSatBeam = true;
-                    break;
-                }
-            }
-
-            if(Objects.equals(inSatBeam, false)){
-                counter++;
-                System.out.println(KSat.getNames().getFirst());
-                tempSatList.add(KSat);
-            }
-            inSatBeam = false;
-
-        }
-        System.out.println("\nCount of KingOfSat not in SatBeam " + counter + " satellites\n" );
+        System.out.println("\nCount of sats not in SatBeam " + counter + " satellites\n" );
 
         return tempSatList;
     }

@@ -48,7 +48,7 @@ public class Serialization {
         siteIn.close();
         siteFile.close();
 
-        System.out.println(whichSite.toUpperCase() + " has been deserialized ");
+        System.out.println(whichSite.toUpperCase() + " has been deserialized");
 
         return deserializedSite;
 

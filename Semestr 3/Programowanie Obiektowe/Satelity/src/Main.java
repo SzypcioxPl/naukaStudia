@@ -77,8 +77,8 @@ public class Main {
 //            }catch (Exception er){
 //                main.warn("Problem with serialization" + er);
 //            }
-
 //        Serialization service = new Serialization();
+
 //        // KingOfSat
 //        WebsiteData KingOfSat = new WebsiteData();
 //        try {
@@ -99,7 +99,18 @@ public class Main {
 //        merge.mergeKingOfSatToSatBeam(KingOfSat.getSatellites(), SatBeam.getSatellites() );
 //
 //        merge.listOfKingOfSatNotInSatBeam(KingOfSat.getSatellites(), SatBeam.getSatellites());
-            
+
+//        //test merging SatBeam with Other Sites
+//        Serialization service = new Serialization();
+//        List<WebsiteData.Satellite> satSatBeam = service.SerializeInput("satbeam").getSatellites();
+//        List<WebsiteData.Satellite> satLyngSat = service.SerializeInput("lyngsat").getSatellites();
+//        List<WebsiteData.Satellite> satKingOfSat = service.SerializeInput("kingofsat").getSatellites();
+//
+//
+//        for(WebsiteData.Satellite updatedSat : merge.mergeSatBeamToOtherSat(satSatBeam, satLyngSat)){
+//            System.out.println(updatedSat.toString());
+//        }
+
         main.info("End of program");
 
     }

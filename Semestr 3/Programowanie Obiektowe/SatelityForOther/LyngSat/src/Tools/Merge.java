@@ -8,7 +8,7 @@ import java.util.Objects;
 
 public class Merge {
 
-    public List<WebsiteData.Satellite> mergeSatBeamToOtherSat(List<WebsiteData.Satellite> SatBeams, List<WebsiteData.Satellite> OtherSats){
+    public static List<WebsiteData.Satellite> mergeSatBeamToOtherSat(List<WebsiteData.Satellite> SatBeams, List<WebsiteData.Satellite> OtherSats){
 
         List <WebsiteData.Satellite> tempSatList = new ArrayList<>();
         int counter = 0;
@@ -109,7 +109,7 @@ public class Merge {
         return tempSatList;
     }
 
-    public List<WebsiteData.Satellite> mergeOtherSatToSatBeam(List<WebsiteData.Satellite> OtherSats, List<WebsiteData.Satellite> SatBeams, String fromWhichSite){
+    public static List<WebsiteData.Satellite> mergeOtherSatToSatBeam(List<WebsiteData.Satellite> OtherSats, List<WebsiteData.Satellite> SatBeams, String fromWhichSite){
 
         List <WebsiteData.Satellite> tempSatList = new ArrayList<>();
         int counter = 0;
@@ -164,7 +164,7 @@ public class Merge {
         return tempSatList;
     }
 
-    public List<WebsiteData.Satellite> listOfOtherSatNotInSatBeam(List<WebsiteData.Satellite> OtherSats, List<WebsiteData.Satellite> SatBeams){
+    public static List<WebsiteData.Satellite> listOfOtherSatNotInSatBeam(List<WebsiteData.Satellite> OtherSats, List<WebsiteData.Satellite> SatBeams){
 
         List <WebsiteData.Satellite> tempSatList = new ArrayList<>();
         int counter = 0;

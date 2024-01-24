@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class WebsiteData {
+public class WebsiteData implements Serializable {
 
     private ArrayList<Satellite> satellites;
 

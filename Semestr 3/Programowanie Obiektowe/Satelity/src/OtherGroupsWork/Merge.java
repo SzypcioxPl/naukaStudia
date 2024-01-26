@@ -109,7 +109,7 @@ public class Merge {
         return tempSatList;
     }
 
-    public List<WebsiteData.Satellite> mergeOtherSatToSatBeam(List<WebsiteData.Satellite> OtherSats, List<WebsiteData.Satellite> SatBeams){
+    public List<WebsiteData.Satellite> mergeOtherSatToSatBeam(List<WebsiteData.Satellite> OtherSats, List<WebsiteData.Satellite> SatBeams, String fromWhichSite){
 
         List <WebsiteData.Satellite> tempSatList = new ArrayList<>();
         int counter = 0;
@@ -131,7 +131,7 @@ public class Merge {
                             for(WebsiteData.Satellite.Transmitter transmitter : OSat.getTransmitters()){
 
                                 if(!Objects.equals(transmitter, null)){
-                                    String newName = (!Objects.equals(transmitter.getTransponder(), null)?transmitter.getTransponder()+"(OtherSat)":"(OtherSat)");
+                                    String newName = (!Objects.equals(transmitter.getTransponder(), null)?transmitter.getTransponder()+" ("+fromWhichSite.toUpperCase()+")":"("+fromWhichSite.toUpperCase()+")");
                                     transmitter.setTransponder(newName);
                                     SSat.addTransmitter(transmitter);
                                 }
@@ -155,7 +155,7 @@ public class Merge {
                     break;
                 }
             }
-            if(update == false){
+            if(!update){
                 tempSatList.add(SSat);
             }
         }
@@ -190,7 +190,7 @@ public class Merge {
                 tempSatList.add(OSat);
             }
         }
-        System.out.println("\nCount of sats not in SatBeam " + counter + " satellites\n" );
+        System.out.println("Count of sats not in SatBeam " + counter + " satellites" );
 
         return tempSatList;
     }

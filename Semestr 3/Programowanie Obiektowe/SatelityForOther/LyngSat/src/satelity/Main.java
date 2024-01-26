@@ -90,11 +90,11 @@ public class Main {
     	boolean zapisDoPliku = false;
     	
     	// ----------| czy wyswietlić zescrapowane lub wczytane z pliku .data danych
-    	boolean wyswietlanie = false;
+    	boolean wyswietlanie = true;
     	
     	
     	// ----------| czy użyć funkcji porównujących dane satelit z SatBeam, LyngSat i SatBeam
-    	boolean mergeDataNotIn = false;
+    	boolean mergeDataNotIn = true;
     	boolean mergeDataFillSatInfo = true;
     	
     	// --------- Żródło internet(scrapowanie)
@@ -230,8 +230,8 @@ public class Main {
         			
             		counter = 0;
             		for(WebsiteData.Satellite sats : SatBeamSatUpdated) {
-//            			System.out.println("SatBeamSatUpdated "+counter+" : " + sats.getNames().get(0));
-            			System.out.println(sats.toString());
+            			System.out.println("SatBeamSatUpdated "+counter+" : " + sats.getNames().get(0));
+//            			System.out.println(sats.toString());
             			counter ++;
             		}
         		}

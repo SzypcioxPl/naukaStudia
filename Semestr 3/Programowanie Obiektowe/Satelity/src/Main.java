@@ -39,6 +39,8 @@ public class Main {
             menu.startMenu();
         }catch (Exception er){
             main.error("Error: " + er.getMessage());
+        }finally {
+            System.out.println("Piwo dobre :)");
         }
 
 //        WebsiteData AllData = new WebsiteData();
